@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -19,7 +20,7 @@ export default function LoginForm({
       className={cn("flex flex-col gap-6  w-full max-w-sm dark", className)}
       {...props}
     >
-      <Card className="bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-gray-100">
+      <Card className="bg-white dark:bg-[#1c1c1e] text-gray-900 dark:text-gray-100">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
           <CardDescription className="text-gray-600 dark:text-gray-400">
@@ -76,6 +77,7 @@ export default function LoginForm({
                   <Input
                     id="password"
                     type="password"
+                    placeholder="••••••••"
                     required
                     className="bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                   />
@@ -89,12 +91,12 @@ export default function LoginForm({
               </div>
               <div className="text-center text-sm text-gray-600 dark:text-gray-400">
                 Don&apos;t have an account?{" "}
-                <a
-                  href="#"
+                <Link
+                  to={"/signup"}
                   className="underline underline-offset-4 text-blue-500 dark:text-blue-400"
                 >
                   Sign up
-                </a>
+                </Link>
               </div>
             </div>
           </form>

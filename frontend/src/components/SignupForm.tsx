@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -15,12 +16,15 @@ export default function SignupForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-gray-100">
+    <div
+      className={cn("flex flex-col gap-6  w-full max-w-sm dark", className)}
+      {...props}
+    >
+      <Card className="bg-white dark:bg-[#1c1c1e] text-gray-900 dark:text-gray-100">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
           <CardDescription className="text-gray-600 dark:text-gray-400">
-            Login with your Google account
+            Signup with your Google account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -37,7 +41,7 @@ export default function SignupForm({
                       fill="currentColor"
                     />
                   </svg>
-                  Login with Google
+                  Signup with Google
                 </Button>
               </div>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-gray-300 dark:after:border-gray-600">
@@ -73,6 +77,7 @@ export default function SignupForm({
                   <Input
                     id="password"
                     type="password"
+                    placeholder="••••••••"
                     required
                     className="bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                   />
@@ -81,17 +86,17 @@ export default function SignupForm({
                   type="submit"
                   className="w-full bg-blue-500 dark:bg-blue-700 text-white hover:bg-blue-600 dark:hover:bg-blue-800"
                 >
-                  Login
+                  Signup
                 </Button>
               </div>
               <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-                Don&apos;t have an account?{" "}
-                <a
-                  href="#"
+                Already have an account?{" "}
+                <Link
+                  to={"/login"}
                   className="underline underline-offset-4 text-blue-500 dark:text-blue-400"
                 >
-                  Sign up
-                </a>
+                  Login
+                </Link>
               </div>
             </div>
           </form>
