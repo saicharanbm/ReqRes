@@ -15,7 +15,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Save, Send, Trash2, Plus } from "lucide-react";
 
 const APIRequest = () => {
-  const [parameters, setParameters] = useState([
+  const [queryParameters, setQueryParameters] = useState([
+    { id: 1, key: "", value: "", description: "" },
+  ]);
+  const [headerList, setHeaderList] = useState([
     { id: 1, key: "", value: "", description: "" },
   ]);
   const [selectedTab, setSelectedTab] = useState("GET");
@@ -42,32 +45,57 @@ const APIRequest = () => {
     alert(`Current language: ${currentLanguage}`);
   };
 
-  const addParameter = () => {
+  const addQueryParameter = () => {
     const newParam = {
       id: Date.now(),
       key: "",
       value: "",
       description: "",
     };
-    setParameters([...parameters, newParam]);
+    setQueryParameters([...queryParameters, newParam]);
   };
 
-  const deleteParameter = (id: number) => {
-    setParameters(parameters.filter((param) => param.id !== id));
+  const deleteQueryParameter = (id: number) => {
+    setQueryParameters(queryParameters.filter((param) => param.id !== id));
   };
 
-  const deleteAllParameters = () => {
-    setParameters([]);
+  const deleteAllQueryParameters = () => {
+    setQueryParameters([]);
   };
 
   const updateParameter = (id: number, field: string, value: string) => {
-    setParameters(
-      parameters.map((param) =>
+    setQueryParameters(
+      queryParameters.map((param) =>
         param.id === id ? { ...param, [field]: value } : param
       )
     );
   };
 
+  const addHeaderList = () => {
+    const newHeader = {
+      id: Date.now(),
+      key: "",
+      value: "",
+      description: "",
+    };
+    setHeaderList([...headerList, newHeader]);
+  };
+
+  const deleteHeaderList = (id: number) => {
+    setHeaderList(headerList.filter((header) => header.id !== id));
+  };
+
+  const deleteAllHeaderLists = () => {
+    setHeaderList([]);
+  };
+
+  const updateHeader = (id: number, field: string, value: string) => {
+    setHeaderList(
+      headerList.map((header) =>
+        header.id === id ? { ...header, [field]: value } : header
+      )
+    );
+  };
   return (
     <div className="w-full max-w-6xl mx-auto bg-background text-foreground p-6 rounded-sm dark:bg-[#121212] shadow-2xl">
       {/* Top Bar */}
@@ -125,19 +153,23 @@ const APIRequest = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={deleteAllParameters}
+                    onClick={deleteAllQueryParameters}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
 
-                  <Button variant="ghost" size="icon" onClick={addParameter}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={addQueryParameter}
+                  >
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
 
               <div className="space-y-2 h-44 overflow-y-auto">
-                {parameters.map((param) => (
+                {queryParameters.map((param) => (
                   <div
                     key={param.id}
                     className="grid grid-cols-[1fr,1fr,1fr,auto] gap-4 p-2 items-center"
@@ -166,14 +198,14 @@ const APIRequest = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => deleteParameter(param.id)}
+                      onClick={() => deleteQueryParameter(param.id)}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 ))}
 
-                {parameters.length === 0 && (
+                {queryParameters.length === 0 && (
                   <div className="text-center py-4 text-muted-foreground">
                     No parameters added. Click the + button to add one.
                   </div>
@@ -206,7 +238,11 @@ const APIRequest = () => {
                 </Select>
                 <button onClick={verifyLanguage}>Verify Language</button>
               </div>
-              {bodyType !== "none" && (
+              {bodyType === "none" ? (
+                <div className="text-center py-4 text-muted-foreground">
+                  No content type selected, Please select a content type.
+                </div>
+              ) : (
                 <MonacoEditor
                   className="h-44"
                   height="100%"
@@ -216,6 +252,73 @@ const APIRequest = () => {
                   onMount={handleEditorMount}
                 />
               )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="headers">
+          <Card className="h-64">
+            <CardContent className="p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-sm text-muted-foreground">Header List</h3>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={deleteAllHeaderLists}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+
+                  <Button variant="ghost" size="icon" onClick={addHeaderList}>
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2 h-44 overflow-y-auto">
+                {headerList.map((header) => (
+                  <div
+                    key={header.id}
+                    className="grid grid-cols-[1fr,1fr,1fr,auto] gap-4 p-2 items-center"
+                  >
+                    <Input
+                      placeholder="Key"
+                      value={header.key}
+                      onChange={(e) =>
+                        updateHeader(header.id, "key", e.target.value)
+                      }
+                    />
+                    <Input
+                      placeholder="Value"
+                      value={header.value}
+                      onChange={(e) =>
+                        updateHeader(header.id, "value", e.target.value)
+                      }
+                    />
+                    <Input
+                      placeholder="Description"
+                      value={header.description}
+                      onChange={(e) =>
+                        updateHeader(header.id, "description", e.target.value)
+                      }
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteHeaderList(header.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+
+                {headerList.length === 0 && (
+                  <div className="text-center py-4 text-muted-foreground">
+                    No parameters added. Click the + button to add one.
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
