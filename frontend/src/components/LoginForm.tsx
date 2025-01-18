@@ -38,7 +38,7 @@ export default function LoginForm({
 
   return (
     <div
-      className={cn("flex flex-col gap-6 w-full max-w-sm dark", className)}
+      className={cn("flex flex-col gap-6 w-full max-w-sm ", className)}
       {...props}
     >
       <Card className="bg-white dark:bg-[#1c1c1e] text-gray-900 dark:text-gray-100">

@@ -35,6 +35,13 @@ const Navbar = ({ userData }: NavbarProps) => {
     }
   }, [userData]);
 
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    document.documentElement.classList.toggle("dark", !darkMode);
+  };
+
   // Clean up timeoutRef on unmount
   useEffect(() => {
     return () => {
@@ -56,6 +63,12 @@ const Navbar = ({ userData }: NavbarProps) => {
             <span className=" text-blue-700 ">Pong</span>
           </h1>
         </div>
+        <button
+          onClick={toggleDarkMode}
+          className="p-2 bg-gray-200 dark:bg-gray-800 rounded"
+        >
+          {darkMode ? "Light Mode" : "Dark Mode"}
+        </button>
       </div>
       {userData ? (
         <div

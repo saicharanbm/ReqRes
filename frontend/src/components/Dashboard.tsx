@@ -1,7 +1,8 @@
 import React from "react";
+import APIRequest from "./ApiRequest";
 
 function Dashboard() {
-  return <div>Dashboard</div>;
+  return <APIRequest />;
 }
 
 export default Dashboard;
