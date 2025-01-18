@@ -93,9 +93,18 @@ router.post("/send-api-request", async (req, res) => {
     console.log(req.body);
     const { url, queryParams, headerList, body, requestType, bodyType } =
       req.body.data;
+    console.log(url, queryParams, headerList, body, requestType, bodyType);
 
     // Construct query parameters
-    const queryString = new URLSearchParams(queryParams).toString();
+    const queryString = queryParams
+      .filter(
+        (param: { key: string; value: string }) => param.key && param.value
+      ) // Filter out empty keys or values
+      .map(
+        (param: { key: string; value: string }) =>
+          `${encodeURIComponent(param.key)}=${encodeURIComponent(param.value)}`
+      ) // Encode and format
+      .join("&"); // Join with '&' to form the query string
     const fullUrl = queryString ? `${url}?${queryString}` : url;
     console.log("query string :", queryString);
     console.log("full Url :", fullUrl);
@@ -128,20 +137,22 @@ router.post("/send-api-request", async (req, res) => {
 
     console.log("options :", options);
     // Make the API request
-    // const response = await axios(options);
+    const response = await axios(options);
+    console.log("response : ", response);
 
     // // Send back the API response to the user
-    // res.json({
-    //   message: "API request successful.",
-    //   data: response.data,
-    //   status: response.status,
-    // });
-  } catch (error) {
-    // console.error("Error making API request:", error.message);
-    // // Send back an error response
-    // res.status(error.response?.status || 500).json({
-    //   message: "API request failed.",
-    //   error: error.response?.data || error.message,
-    // });
+    res.json({
+      message: "API request successful.",
+      data: response.data,
+      status: response.status,
+    });
+  } catch (error: any) {
+    console.log(error);
+    console.error("Error making API request:", error.message);
+    // Send back an error response
+    res.status(error.response?.status || 500).json({
+      message: "API request failed.",
+      error: error.response?.data || error.message,
+    });
   }
 });

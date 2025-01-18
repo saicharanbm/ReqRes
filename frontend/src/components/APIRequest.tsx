@@ -18,11 +18,9 @@ import { apiRequest } from "@/services/api";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState([
-    { id: 1, key: "", value: "", description: "" },
+    { id: 1, key: "", value: "" },
   ]);
-  const [headerList, setHeaderList] = useState([
-    { id: 1, key: "", value: "", description: "" },
-  ]);
+  const [headerList, setHeaderList] = useState([{ id: 1, key: "", value: "" }]);
   const [url, setUrl] = useState("http://localhost:3000");
   const [requestType, setRequestType] = useState("GET");
   const [bodyType, setBodyType] = useState("none");
@@ -107,13 +105,14 @@ const APIRequest = () => {
       return;
     }
     const data = {
-      requestType,
       url,
-      queryParameters,
-      bodyType,
-      body,
+      queryParams: queryParameters,
       headerList,
+      body,
+      requestType,
+      bodyType,
     };
+    console.log(data);
     const response = await apiRequest(data);
     console.log(response);
   };
@@ -200,7 +199,7 @@ const APIRequest = () => {
                 {queryParameters.map((param) => (
                   <div
                     key={param.id}
-                    className="grid grid-cols-[1fr,1fr,1fr,auto] gap-4 p-2 items-center"
+                    className="grid grid-cols-[1fr,2fr,auto] gap-4 p-2 items-center"
                   >
                     <Input
                       placeholder="Key"
@@ -216,13 +215,7 @@ const APIRequest = () => {
                         updateParameter(param.id, "value", e.target.value)
                       }
                     />
-                    <Input
-                      placeholder="Description"
-                      value={param.description}
-                      onChange={(e) =>
-                        updateParameter(param.id, "description", e.target.value)
-                      }
-                    />
+
                     <Button
                       variant="ghost"
                       size="icon"
@@ -275,7 +268,7 @@ const APIRequest = () => {
                   className="h-44"
                   height="100%"
                   defaultLanguage={bodyType}
-                  defaultValue=""
+                  defaultValue={body}
                   theme="vs-dark"
                   onChange={(data) => {
                     setBody(data || "");
@@ -311,7 +304,7 @@ const APIRequest = () => {
                 {headerList.map((header) => (
                   <div
                     key={header.id}
-                    className="grid grid-cols-[1fr,1fr,1fr,auto] gap-4 p-2 items-center"
+                    className="grid grid-cols-[1fr,2fr,auto] gap-4 p-2 items-center"
                   >
                     <Input
                       placeholder="Key"
@@ -325,13 +318,6 @@ const APIRequest = () => {
                       value={header.value}
                       onChange={(e) =>
                         updateHeader(header.id, "value", e.target.value)
-                      }
-                    />
-                    <Input
-                      placeholder="Description"
-                      value={header.description}
-                      onChange={(e) =>
-                        updateHeader(header.id, "description", e.target.value)
                       }
                     />
                     <Button
