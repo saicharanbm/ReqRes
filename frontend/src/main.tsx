@@ -9,6 +9,7 @@ import { ToastContainer, Bounce } from "react-toastify";
 
 import LoginForm from "./components/LoginForm.tsx";
 import SignupForm from "./components/SignupForm.tsx";
+import Dashboard from "./components/Dashboard.tsx";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "/",
+        element: <Dashboard />,
+      },
       {
         path: "/login",
         element: <LoginForm />,
