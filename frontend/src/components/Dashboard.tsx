@@ -1,7 +1,11 @@
 import APIRequest from "./ApiRequest";
 
 function Dashboard() {
-  return <APIRequest />;
+  return (
+    <div className="w-full ">
+      <APIRequest />
+    </div>
+  );
 }
 
 export default Dashboard;

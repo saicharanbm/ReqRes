@@ -85,3 +85,63 @@ router.post("/google", async (req, res) => {
     res.status(400).json({ message: "Something went wrong" });
   }
 });
+
+// const axios = require("axios");
+
+router.post("/send-api-request", async (req, res) => {
+  try {
+    console.log(req.body);
+    const { url, queryParams, headerList, body, requestType, bodyType } =
+      req.body.data;
+
+    // Construct query parameters
+    const queryString = new URLSearchParams(queryParams).toString();
+    const fullUrl = queryString ? `${url}?${queryString}` : url;
+    console.log("query string :", queryString);
+    console.log("full Url :", fullUrl);
+
+    // Convert header list to an object if needed
+    interface Header {
+      key: string;
+      value: string;
+    }
+
+    const headers = headerList.reduce(
+      (acc: Record<string, string>, { key, value }: Header) => {
+        acc[key] = value;
+        return acc;
+      },
+      {}
+    );
+
+    console.log("headers :", headers);
+
+    // Configure request options
+    const options = {
+      method: requestType, // e.g., GET, POST, etc.
+      url: fullUrl,
+      headers,
+      ...(requestType !== "GET" && {
+        data: bodyType === "json" ? JSON.parse(body) : body,
+      }), // Include body for non-GET requests
+    };
+
+    console.log("options :", options);
+    // Make the API request
+    // const response = await axios(options);
+
+    // // Send back the API response to the user
+    // res.json({
+    //   message: "API request successful.",
+    //   data: response.data,
+    //   status: response.status,
+    // });
+  } catch (error) {
+    // console.error("Error making API request:", error.message);
+    // // Send back an error response
+    // res.status(error.response?.status || 500).json({
+    //   message: "API request failed.",
+    //   error: error.response?.data || error.message,
+    // });
+  }
+});

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,6 +14,7 @@ import MonacoEditor from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 import { Card, CardContent } from "@/components/ui/card";
 import { Save, Send, Trash2, Plus } from "lucide-react";
+import { apiRequest } from "@/services/api";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState([
@@ -21,8 +23,10 @@ const APIRequest = () => {
   const [headerList, setHeaderList] = useState([
     { id: 1, key: "", value: "", description: "" },
   ]);
-  const [selectedTab, setSelectedTab] = useState("GET");
+  const [url, setUrl] = useState("http://localhost:3000");
+  const [requestType, setRequestType] = useState("GET");
   const [bodyType, setBodyType] = useState("none");
+  const [body, setBody] = useState("");
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   const handleEditorMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
@@ -96,14 +100,32 @@ const APIRequest = () => {
       )
     );
   };
+
+  const sendApiRequest = async () => {
+    if (!url) {
+      toast.error("Endpoint can't be empty.");
+      return;
+    }
+    const data = {
+      requestType,
+      url,
+      queryParameters,
+      bodyType,
+      body,
+      headerList,
+    };
+    const response = await apiRequest(data);
+    console.log(response);
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto bg-background text-foreground p-6 rounded-sm dark:bg-[#121212] shadow-2xl">
       {/* Top Bar */}
       <div className="flex items-center gap-4 mb-6">
         <Select
-          defaultValue={selectedTab}
+          defaultValue={requestType}
           onValueChange={(value) => {
-            setSelectedTab(value);
+            setRequestType(value);
           }}
         >
           <SelectTrigger className="w-24">
@@ -119,11 +141,17 @@ const APIRequest = () => {
 
         <Input
           className="flex-1"
-          placeholder="http://localhost:3000"
-          defaultValue="http://localhost:3000"
+          placeholder="Enter a URL"
+          defaultValue={url}
+          onChange={(e) => {
+            setUrl(e.target.value);
+          }}
         />
 
-        <Button className="bg-violet-500 hover:bg-violet-600">
+        <Button
+          className="bg-violet-500 hover:bg-violet-600"
+          onClick={sendApiRequest}
+        >
           <Send className="w-4 h-4 mr-2" />
           Send
         </Button>
@@ -249,6 +277,9 @@ const APIRequest = () => {
                   defaultLanguage={bodyType}
                   defaultValue=""
                   theme="vs-dark"
+                  onChange={(data) => {
+                    setBody(data || "");
+                  }}
                   onMount={handleEditorMount}
                 />
               )}

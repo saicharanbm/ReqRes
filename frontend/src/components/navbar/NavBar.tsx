@@ -55,7 +55,7 @@ const Navbar = ({ userData }: NavbarProps) => {
   }, [darkMode]);
 
   return (
-    <nav className="h-16  fixed top-0 w-full text-white flex items-center justify-between px-[6%] border-b-2 bg-[#FAFAFA]  dark:bg-[#09090B] border-[#262d38] z-40">
+    <nav className="h-16  fixed top-0 w-full text-white flex items-center justify-between px-[6%]  shadow-2xl dark:border-b-2 bg-[#FBFBFB]  dark:bg-[#09090B] border-[#262d38] z-40">
       <div className="flex space-x-12">
         <div className="icon">
           <h1
