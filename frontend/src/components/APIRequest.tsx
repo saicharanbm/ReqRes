@@ -10,7 +10,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Save, Send, HelpCircle, Trash2, PenSquare, Plus } from "lucide-react";
+import { Save, Send, Trash2, Plus } from "lucide-react";
 
 const APIRequest = () => {
   const [parameters, setParameters] = useState([
@@ -92,7 +92,7 @@ const APIRequest = () => {
         </TabsList>
 
         <TabsContent value="parameters">
-          <Card>
+          <Card className="h-64">
             <CardContent className="p-4 ">
               <div className="flex justify-between items-center mb-4 ">
                 <h3 className="text-sm text-muted-foreground">
@@ -113,7 +113,7 @@ const APIRequest = () => {
                 </div>
               </div>
 
-              <div className="space-y-2 h-56 overflow-y-auto">
+              <div className="space-y-2 h-44  overflow-y-auto">
                 {parameters.map((param) => (
                   <div
                     key={param.id}

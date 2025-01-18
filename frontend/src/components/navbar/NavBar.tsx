@@ -60,7 +60,7 @@ const Navbar = ({ userData }: NavbarProps) => {
             onClick={() => navigate("/")}
           >
             <span>Ping</span>
-            <span className=" text-blue-700 ">Pong</span>
+            <span className=" text-blue-700 ">Man</span>
           </h1>
         </div>
         <button

@@ -10,6 +10,8 @@ import { ToastContainer, Bounce } from "react-toastify";
 import LoginForm from "./components/LoginForm.tsx";
 import SignupForm from "./components/SignupForm.tsx";
 import Dashboard from "./components/Dashboard.tsx";
+import CodeMirrorEditor from "./components/CodeMirrorEditor.tsx";
+import MonacoEdit from "./components/MonacoEdit.tsx";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignupForm />,
+      },
+      {
+        path: "/e1",
+        element: <CodeMirrorEditor />,
+      },
+      {
+        path: "/e2",
+        element: <MonacoEdit />,
       },
     ],
   },
