@@ -11,14 +11,34 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import GoogleAuthButton from "./GoogleAuthButton";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+// Define form data type
+type LoginFormInputs = {
+  email: string;
+  password: string;
+};
 
 export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  // Initialize React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>();
+
+  // Submit handler
+  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
+    console.log("Form submitted with:", data);
+    // Add login logic here
+  };
+
   return (
     <div
-      className={cn("flex flex-col gap-6  w-full max-w-sm dark", className)}
+      className={cn("flex flex-col gap-6 w-full max-w-sm dark", className)}
       {...props}
     >
       <Card className="bg-white dark:bg-[#1c1c1e] text-gray-900 dark:text-gray-100">
@@ -29,7 +49,7 @@ export default function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <GoogleAuthButton />
@@ -51,9 +71,20 @@ export default function LoginForm({
                     id="email"
                     type="email"
                     placeholder="m@example.com"
-                    required
                     className="bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: "Invalid email address",
+                      },
+                    })}
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
@@ -68,9 +99,20 @@ export default function LoginForm({
                     id="password"
                     type="password"
                     placeholder="••••••••"
-                    required
                     className="bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Password must be at least 6 characters long",
+                      },
+                    })}
                   />
+                  {errors.password && (
+                    <p className="text-red-500 text-sm">
+                      {errors.password.message}
+                    </p>
+                  )}
                 </div>
                 <Button
                   type="submit"

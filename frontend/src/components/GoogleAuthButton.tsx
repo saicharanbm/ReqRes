@@ -21,7 +21,11 @@ function GoogleAuthButton({
   });
   return (
     <Button
-      onClick={googleLogin}
+      onClick={(e) => {
+        e.preventDefault();
+        googleLogin();
+        console.log("hello");
+      }}
       variant="outline"
       className="w-full dark:border-gray-600 dark:text-gray-100 hover:dark:bg-[#1C1C1E]"
     >
