@@ -5,10 +5,12 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 function App() {
   return (
     //00050ded
-    <div className="w-full min-h-screen flex items-center justify-center bg-muted dark:bg-[#18181B] gap-6 p-6 md:p-10">
+    <div className="w-full min-h-screen flex items-center justify-center bg-[#FAFAFA]  dark:bg-[#09090B] gap-6 p-6 md:p-10">
       <NavBar />
       <GoogleOAuthProvider clientId={clientId}>
-        <Outlet />
+        <div className="pt-6 w-full">
+          <Outlet />
+        </div>
       </GoogleOAuthProvider>
     </div>
   );

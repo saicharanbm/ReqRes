@@ -16,6 +16,7 @@ const APIRequest = () => {
   const [parameters, setParameters] = useState([
     { id: 1, key: "", value: "", description: "" },
   ]);
+  const [selectedTab, setSelectedTab] = useState("GET");
 
   const addParameter = () => {
     const newParam = {
@@ -44,10 +45,16 @@ const APIRequest = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto bg-background  text-foreground p-6 rounded-sm ">
+    <div className="w-full max-w-6xl mx-auto bg-background  text-foreground p-6 rounded-sm dark:bg-[#121212] shadow-2xl">
       {/* Top Bar */}
       <div className="flex items-center gap-4 mb-6">
-        <Select defaultValue="GET">
+        <Select
+          defaultValue={selectedTab}
+          onValueChange={(value) => {
+            console.log(value);
+            setSelectedTab(value);
+          }}
+        >
           <SelectTrigger className="w-24">
             <SelectValue />
           </SelectTrigger>
@@ -61,8 +68,8 @@ const APIRequest = () => {
 
         <Input
           className="flex-1"
-          placeholder="https://echo.hoppscotch.io"
-          defaultValue="https://echo.hoppscotch.io"
+          placeholder="http://localhost:3000"
+          defaultValue="http://localhost:3000"
         />
 
         <Button className="bg-violet-500 hover:bg-violet-600">
@@ -82,9 +89,6 @@ const APIRequest = () => {
           <TabsTrigger value="parameters">Parameters</TabsTrigger>
           <TabsTrigger value="body">Body</TabsTrigger>
           <TabsTrigger value="headers">Headers</TabsTrigger>
-          <TabsTrigger value="authorization">Authorization</TabsTrigger>
-          <TabsTrigger value="pre-request">Pre-request Script</TabsTrigger>
-          <TabsTrigger value="tests">Tests</TabsTrigger>
         </TabsList>
 
         <TabsContent value="parameters">
@@ -95,9 +99,6 @@ const APIRequest = () => {
                   Query Parameters
                 </h3>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="icon">
-                    <HelpCircle className="w-4 h-4" />
-                  </Button>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -105,20 +106,18 @@ const APIRequest = () => {
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" size="icon">
-                    <PenSquare className="w-4 h-4" />
-                  </Button>
+
                   <Button variant="ghost" size="icon" onClick={addParameter}>
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 h-56 overflow-y-auto">
                 {parameters.map((param) => (
                   <div
                     key={param.id}
-                    className="grid grid-cols-[1fr,1fr,1fr,auto] gap-4 items-center"
+                    className="grid grid-cols-[1fr,1fr,1fr,auto] gap-4 p-2 items-center"
                   >
                     <Input
                       placeholder="Key"
@@ -161,7 +160,13 @@ const APIRequest = () => {
           </Card>
         </TabsContent>
 
-        {/* Other tab contents would go here */}
+        <TabsContent value="body">
+          <Card>
+            <CardContent className="p-4">
+              <Input placeholder="Body" />
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );

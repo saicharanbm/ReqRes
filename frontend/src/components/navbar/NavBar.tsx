@@ -56,7 +56,7 @@ const Navbar = ({ userData }: NavbarProps) => {
       <div className="flex space-x-12">
         <div className="icon">
           <h1
-            className="text-3xl font-bold tracking-wider text-[#fff] cursor-pointer"
+            className="text-3xl font-bold tracking-wider text-[#121212] dark:text-[#fff] cursor-pointer"
             onClick={() => navigate("/")}
           >
             <span>Ping</span>
@@ -96,8 +96,10 @@ const Navbar = ({ userData }: NavbarProps) => {
               key={index}
               to={authPath}
               className={({ isActive }) =>
-                `text-lg p-1 rounded cursor-pointer hover:bg-blue-700 font-semibold hover:opacity-100   ${
-                  isActive && "bg-blue-700 text-white opacity-80 "
+                `text-lg p-1 rounded cursor-pointer  hover:bg-blue-700 font-semibold hover:opacity-100   ${
+                  isActive
+                    ? "bg-blue-700  text-[#fff] opacity-80 "
+                    : "text-[#121212] dark:text-[#fff]"
                 }`
               }
             >
