@@ -44,7 +44,7 @@ const APIRequest = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto bg-background dark:bg-[#18181b] text-foreground p-4">
+    <div className="w-full max-w-6xl mx-auto bg-background  text-foreground p-6 rounded-sm ">
       {/* Top Bar */}
       <div className="flex items-center gap-4 mb-6">
         <Select defaultValue="GET">
@@ -70,7 +70,7 @@ const APIRequest = () => {
           Send
         </Button>
 
-        <Button variant="outline" className="dark:bg-[#151516]">
+        <Button variant="outline">
           <Save className="w-4 h-4 mr-2" />
           Save
         </Button>

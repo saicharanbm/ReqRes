@@ -41,7 +41,7 @@ export default function LoginForm({
       className={cn("flex flex-col gap-6 w-full max-w-sm ", className)}
       {...props}
     >
-      <Card className="bg-white dark:bg-[#1c1c1e] text-gray-900 dark:text-gray-100">
+      <Card className="bg-white dark:bg-[#121212] text-gray-900 dark:text-gray-100">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
           <CardDescription className="text-gray-600 dark:text-gray-400">
@@ -55,7 +55,7 @@ export default function LoginForm({
                 <GoogleAuthButton />
               </div>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-gray-300 dark:after:border-gray-600">
-                <span className="relative z-10 bg-white dark:bg-[#1C1C1E] px-2 text-gray-500 dark:text-gray-400">
+                <span className="relative z-10 bg-white dark:bg-[#121212] px-2 text-gray-500 dark:text-gray-400">
                   Or continue with
                 </span>
               </div>
@@ -63,7 +63,7 @@ export default function LoginForm({
                 <div className="grid gap-2">
                   <Label
                     htmlFor="email"
-                    className="text-[#1C1C1E] dark:text-gray-300"
+                    className="text-[#121212] dark:text-gray-300"
                   >
                     Email
                   </Label>
@@ -71,7 +71,7 @@ export default function LoginForm({
                     id="email"
                     type="email"
                     placeholder="m@example.com"
-                    className="bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+                    className="bg-gray-50 dark:bg-[#121212] text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                     {...register("email", {
                       required: "Email is required",
                       pattern: {
@@ -90,7 +90,7 @@ export default function LoginForm({
                   <div className="flex items-center">
                     <Label
                       htmlFor="password"
-                      className="text-[#1C1C1E] dark:text-gray-300"
+                      className="text-[#121212] dark:text-gray-300"
                     >
                       Password
                     </Label>
@@ -99,7 +99,7 @@ export default function LoginForm({
                     id="password"
                     type="password"
                     placeholder="••••••••"
-                    className="bg-gray-50 dark:bg-[#1C1C1E] text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+                    className="bg-gray-50 dark:bg-[#121212] text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                     {...register("password", {
                       required: "Password is required",
                       minLength: {
