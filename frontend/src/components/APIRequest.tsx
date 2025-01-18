@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,8 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import MonacoEditor from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
 import { Card, CardContent } from "@/components/ui/card";
 import { Save, Send, Trash2, Plus } from "lucide-react";
 
@@ -17,10 +19,32 @@ const APIRequest = () => {
     { id: 1, key: "", value: "", description: "" },
   ]);
   const [selectedTab, setSelectedTab] = useState("GET");
+  const [bodyType, setBodyType] = useState("none");
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+
+  const handleEditorMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
+    editorRef.current = editor;
+  };
+
+  // Update editor language when bodyType changes
+  useEffect(() => {
+    if (editorRef.current) {
+      const model = editorRef.current.getModel();
+      if (model) {
+        monaco.editor.setModelLanguage(model, bodyType);
+      }
+    }
+  }, [bodyType]);
+
+  const verifyLanguage = () => {
+    const model = editorRef.current?.getModel();
+    const currentLanguage = model?.getLanguageId();
+    alert(`Current language: ${currentLanguage}`);
+  };
 
   const addParameter = () => {
     const newParam = {
-      id: Date.now(), // Using timestamp as a simple unique id
+      id: Date.now(),
       key: "",
       value: "",
       description: "",
@@ -45,13 +69,12 @@ const APIRequest = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto bg-background  text-foreground p-6 rounded-sm dark:bg-[#121212] shadow-2xl">
+    <div className="w-full max-w-6xl mx-auto bg-background text-foreground p-6 rounded-sm dark:bg-[#121212] shadow-2xl">
       {/* Top Bar */}
       <div className="flex items-center gap-4 mb-6">
         <Select
           defaultValue={selectedTab}
           onValueChange={(value) => {
-            console.log(value);
             setSelectedTab(value);
           }}
         >
@@ -93,8 +116,8 @@ const APIRequest = () => {
 
         <TabsContent value="parameters">
           <Card className="h-64">
-            <CardContent className="p-4 ">
-              <div className="flex justify-between items-center mb-4 ">
+            <CardContent className="p-4">
+              <div className="flex justify-between items-center mb-4">
                 <h3 className="text-sm text-muted-foreground">
                   Query Parameters
                 </h3>
@@ -113,7 +136,7 @@ const APIRequest = () => {
                 </div>
               </div>
 
-              <div className="space-y-2 h-44  overflow-y-auto">
+              <div className="space-y-2 h-44 overflow-y-auto">
                 {parameters.map((param) => (
                   <div
                     key={param.id}
@@ -161,9 +184,38 @@ const APIRequest = () => {
         </TabsContent>
 
         <TabsContent value="body">
-          <Card>
+          <Card className="h-64">
             <CardContent className="p-4">
-              <Input placeholder="Body" />
+              <div className="flex gap-2 items-center mb-4">
+                <h3 className="text-sm text-muted-foreground">Content Type</h3>
+                <Select
+                  value={bodyType}
+                  onValueChange={(value) => {
+                    setBodyType(value);
+                  }}
+                >
+                  <SelectTrigger className="w-24">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">NONE</SelectItem>
+                    <SelectItem value="json">JSON</SelectItem>
+                    <SelectItem value="text">TEXT</SelectItem>
+                    <SelectItem value="html">HTML</SelectItem>
+                  </SelectContent>
+                </Select>
+                <button onClick={verifyLanguage}>Verify Language</button>
+              </div>
+              {bodyType !== "none" && (
+                <MonacoEditor
+                  className="h-44"
+                  height="100%"
+                  defaultLanguage={bodyType}
+                  defaultValue=""
+                  theme="vs-dark"
+                  onMount={handleEditorMount}
+                />
+              )}
             </CardContent>
           </Card>
         </TabsContent>

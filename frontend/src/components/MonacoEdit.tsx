@@ -5,14 +5,19 @@ function MonacoEdit() {
   const [json, setJson] = useState("");
 
   return (
-    <div className="w-full">
+    <div className="w-full h-64">
       <MonacoEditor
-        height="200px"
-        defaultLanguage="html"
+        height="100%"
+        defaultLanguage="json"
         value={json}
         onChange={(value) => setJson(value || "")}
         onValidate={(value) => {
           console.log(value);
+        }}
+        options={{
+          minimap: {
+            enabled: false,
+          },
         }}
       />
     </div>

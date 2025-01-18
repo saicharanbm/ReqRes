@@ -35,11 +35,10 @@ const Navbar = ({ userData }: NavbarProps) => {
     }
   }, [userData]);
 
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    document.documentElement.classList.toggle("dark", !darkMode);
   };
 
   // Clean up timeoutRef on unmount
@@ -51,8 +50,12 @@ const Navbar = ({ userData }: NavbarProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+  }, [darkMode]);
+
   return (
-    <nav className="h-16  fixed top-0 w-full text-white flex items-center justify-between px-[6%] border-b-2 border-[#262d38] z-40">
+    <nav className="h-16  fixed top-0 w-full text-white flex items-center justify-between px-[6%] border-b-2 bg-[#FAFAFA]  dark:bg-[#09090B] border-[#262d38] z-40">
       <div className="flex space-x-12">
         <div className="icon">
           <h1
