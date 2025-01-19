@@ -164,5 +164,6 @@ router.post("/send-api-request", async (req, res) => {
 });
 
 router.get("/hello", (req, res) => {
+  console.log("hello");
   res.status(400).json({ message: "Hello this is the error" });
 });

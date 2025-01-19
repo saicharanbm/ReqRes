@@ -27,6 +27,31 @@ const APIRequest = () => {
   const [body, setBody] = useState("");
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
+  // Add state for extension status
+  const [hasExtension, setHasExtension] = useState(false);
+
+  // Check for extension on mount
+  useEffect(() => {
+    const checkExtension = () => {
+      // Check for any Chromium-based browser's extension API
+      if (window.chrome?.runtime || (window as any).browser?.runtime) {
+        const runtime =
+          window.chrome?.runtime || (window as any).browser?.runtime;
+
+        // Try to communicate with extension
+        runtime.sendMessage(
+          "nbgnlealnfkpjabjpffdgodlojacdlaf",
+          { type: "CHECK_INSTALLED" },
+          (response) => {
+            setHasExtension(!!response);
+          }
+        );
+      }
+    };
+
+    checkExtension();
+  }, []);
+
   const handleEditorMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
   };
@@ -104,17 +129,59 @@ const APIRequest = () => {
       toast.error("Endpoint can't be empty.");
       return;
     }
-    const data = {
-      url,
-      queryParams: queryParameters,
-      headerList,
-      body,
-      requestType,
-      bodyType,
-    };
-    console.log(data);
-    const response = await apiRequest(data);
-    console.log(response);
+
+    const isLocalhost = url.includes("localhost") || url.includes("127.0.0.1");
+    const runtime = window.chrome?.runtime || (window as any).browser?.runtime;
+
+    try {
+      if (isLocalhost && hasExtension && runtime) {
+        // Send request through extension
+        const response = await new Promise((resolve, reject) => {
+          runtime.sendMessage(
+            "nbgnlealnfkpjabjpffdgodlojacdlaf",
+            {
+              type: "MAKE_REQUEST",
+              data: {
+                url,
+                queryParams: queryParameters,
+                headerList,
+                body,
+                requestType,
+                bodyType,
+              },
+            },
+            (response) => {
+              if (response?.error) {
+                reject(new Error(response.error));
+              } else {
+                resolve(response);
+              }
+            }
+          );
+        });
+
+        console.log("Response from extension:", response);
+        toast.success("Request successful");
+      } else if (isLocalhost) {
+        toast.error(
+          "To test localhost APIs, please install our browser extension or use a tunneling service like ngrok"
+        );
+      } else {
+        // Your existing non-localhost request handling
+        const data = {
+          url,
+          queryParams: queryParameters,
+          headerList,
+          body,
+          requestType,
+          bodyType,
+        };
+        const response = await apiRequest(data);
+        console.log(response);
+      }
+    } catch (error) {
+      toast.error(`Request failed: ${error.message}`);
+    }
   };
 
   return (
