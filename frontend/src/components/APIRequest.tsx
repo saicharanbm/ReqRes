@@ -43,6 +43,7 @@ const APIRequest = () => {
           "nbgnlealnfkpjabjpffdgodlojacdlaf",
           { type: "CHECK_INSTALLED" },
           (response) => {
+            console.log(response);
             setHasExtension(!!response);
           }
         );

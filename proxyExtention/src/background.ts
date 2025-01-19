@@ -128,12 +128,12 @@ chrome.runtime.onMessageExternal.addListener(
 );
 
 // Clean up old requests periodically
-setInterval(() => {
-  const now = Date.now();
-  activeRequests.forEach((request, id) => {
-    if (now - request.timestamp > 30000) {
-      // 30 seconds timeout
-      activeRequests.delete(id);
-    }
-  });
-}, 10000);
+// setInterval(() => {
+//   const now = Date.now();
+//   activeRequests.forEach((request, id) => {
+//     if (now - request.timestamp > 30000) {
+//       // 30 seconds timeout
+//       activeRequests.delete(id);
+//     }
+//   });
+// }, 10000);

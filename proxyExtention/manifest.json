@@ -18,6 +18,6 @@
   },
 
   "externally_connectable": {
-    "matches": ["http://localhost:5173"]
+    "matches": ["<all_urls>"]
   }
 }

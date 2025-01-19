@@ -7,6 +7,7 @@ import { generateToken } from "../utils";
 export const router = Router();
 
 router.post("/google", async (req, res) => {
+  console.log("hello");
   const { code } = req.body;
   if (!code) {
     res.status(400).send("Missing code");
