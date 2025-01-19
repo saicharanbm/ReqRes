@@ -10,7 +10,6 @@ export const googleAuth = (code: string) => {
   return axiosInstance.post("/google", { code });
 };
 
-// @ts-expect-error
 export const apiRequest = (data: any) => {
   return axiosInstance.post("/send-api-request", { data });
 };

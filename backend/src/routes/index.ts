@@ -93,66 +93,76 @@ router.post("/send-api-request", async (req, res) => {
     console.log(req.body);
     const { url, queryParams, headerList, body, requestType, bodyType } =
       req.body.data;
-    console.log(url, queryParams, headerList, body, requestType, bodyType);
 
     // Construct query parameters
     const queryString = queryParams
       .filter(
         (param: { key: string; value: string }) => param.key && param.value
-      ) // Filter out empty keys or values
+      )
       .map(
         (param: { key: string; value: string }) =>
           `${encodeURIComponent(param.key)}=${encodeURIComponent(param.value)}`
-      ) // Encode and format
-      .join("&"); // Join with '&' to form the query string
+      )
+      .join("&");
     const fullUrl = queryString ? `${url}?${queryString}` : url;
-    console.log("query string :", queryString);
-    console.log("full Url :", fullUrl);
 
-    // Convert header list to an object if needed
-    interface Header {
-      key: string;
-      value: string;
-    }
-
-    const headers = headerList.reduce(
-      (acc: Record<string, string>, { key, value }: Header) => {
-        acc[key] = value;
-        return acc;
-      },
-      {}
-    );
-
-    console.log("headers :", headers);
+    // Convert header list to an object
+    const headers = headerList
+      .filter(
+        (header: { key: string; value: string }) => header.key && header.value
+      )
+      .reduce(
+        (
+          acc: Record<string, string>,
+          { key, value }: { key: string; value: string }
+        ) => {
+          acc[key] = value;
+          return acc;
+        },
+        {}
+      );
 
     // Configure request options
     const options = {
-      method: requestType, // e.g., GET, POST, etc.
+      method: requestType,
       url: fullUrl,
       headers,
       ...(requestType !== "GET" && {
         data: bodyType === "json" ? JSON.parse(body) : body,
-      }), // Include body for non-GET requests
+      }),
     };
 
-    console.log("options :", options);
     // Make the API request
     const response = await axios(options);
-    console.log("response : ", response);
 
-    // // Send back the API response to the user
+    // Send back the API response to the user
     res.json({
       message: "API request successful.",
       data: response.data,
       status: response.status,
     });
   } catch (error: any) {
-    console.log(error);
-    console.error("Error making API request:", error.message);
-    // Send back an error response
-    res.status(error.response?.status || 500).json({
-      message: "API request failed.",
-      error: error.response?.data || error.message,
-    });
+    if (axios.isAxiosError(error)) {
+      console.error("Axios error details:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        headers: error.response?.headers,
+      });
+
+      res.status(error.response?.status || 500).json({
+        message: "API request failed.",
+        error: error.response?.data || error.message,
+      });
+    } else {
+      console.error("Unexpected error:", error);
+      res.status(500).json({
+        message: "An unexpected error occurred.",
+        error: error.message,
+      });
+    }
   }
+});
+
+router.get("/hello", (req, res) => {
+  res.status(400).json({ message: "Hello this is the error" });
 });

@@ -1,0 +1,19 @@
+{
+  "name": "proxyextention",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -b && pnpm copy-static-files",
+    "copy-static-files": "npx cpy-cli 'src/*.html' 'src/*.css' 'manifest.json' dist/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/chrome": "^0.0.297",
+    "cpy": "^11.1.0",
+    "cpy-cli": "^5.0.0"
+  }
+}

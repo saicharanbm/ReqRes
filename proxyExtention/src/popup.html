@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Local API Proxy</title>
+    <style>
+      body {
+        width: 300px;
+        padding: 15px;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .status {
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+      }
+      .active {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+      }
+      .error {
+        background-color: #ffebee;
+        color: #c62828;
+      }
+      .request-list {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      .request-item {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="status" class="status active">
+      Extension is active and ready to handle localhost requests
+    </div>
+    <div>
+      <h4>Recent Requests:</h4>
+      <div id="requestList" class="request-list"></div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
