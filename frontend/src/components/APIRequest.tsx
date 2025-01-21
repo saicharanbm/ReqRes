@@ -178,7 +178,7 @@ const APIRequest = () => {
           bodyType,
         };
         const response = await apiRequest(data);
-        console.log(response);
+        console.log("resoonse from backend", response);
       }
     } catch (error) {
       toast.error(`Request failed: ${error.message}`);

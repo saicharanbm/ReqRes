@@ -95,7 +95,7 @@ chrome.runtime.onMessageExternal.addListener(
           }
 
           // Remove from active requests
-          activeRequests.delete(requestId);
+          // activeRequests.delete(requestId);
 
           sendResponse({
             success: true,
@@ -107,7 +107,7 @@ chrome.runtime.onMessageExternal.addListener(
           });
         } catch (error: any) {
           // Remove from active requests
-          activeRequests.delete(requestId);
+          // activeRequests.delete(requestId);
 
           sendResponse({
             success: false,

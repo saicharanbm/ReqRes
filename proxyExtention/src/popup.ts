@@ -15,8 +15,16 @@ document.addEventListener("DOMContentLoaded", function () {
         background.activeRequests.forEach((request, id) => {
           const div = document.createElement("div");
           div.className = "request-item";
+
           div.textContent = `${request.details.requestType} ${request.details.url}`;
+          requestList?.appendChild(div);
         });
+      } else {
+        const div = document.createElement("div");
+        div.className = "request-item";
+
+        div.textContent = `No requests to show.`;
+        requestList?.appendChild(div);
       }
     });
   }, 1000);
