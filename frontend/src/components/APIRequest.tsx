@@ -135,7 +135,7 @@ const APIRequest = () => {
     const runtime = window.chrome?.runtime || (window as any).browser?.runtime;
 
     try {
-      if (isLocalhost && hasExtension && runtime) {
+      if (hasExtension && runtime) {
         // Send request through extension
         const response = await new Promise((resolve, reject) => {
           runtime.sendMessage(
@@ -163,23 +163,25 @@ const APIRequest = () => {
 
         console.log("Response from extension:", response);
         toast.success("Request successful");
-      } else if (isLocalhost) {
+        return;
+      }
+      if (isLocalhost && (!hasExtension || !runtime)) {
         toast.error(
           "To test localhost APIs, please install our browser extension or use a tunneling service like ngrok"
         );
-      } else {
-        // Your existing non-localhost request handling
-        const data = {
-          url,
-          queryParams: queryParameters,
-          headerList,
-          body,
-          requestType,
-          bodyType,
-        };
-        const response = await apiRequest(data);
-        console.log("resoonse from backend", response);
+        return;
       }
+      // Your existing non-localhost request handling
+      const data = {
+        url,
+        queryParams: queryParameters,
+        headerList,
+        body,
+        requestType,
+        bodyType,
+      };
+      const response = await apiRequest(data);
+      console.log("resoonse from backend", response);
     } catch (error) {
       toast.error(`Request failed: ${error.message}`);
     }

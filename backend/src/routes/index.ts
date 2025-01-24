@@ -123,44 +123,54 @@ router.post("/send-api-request", async (req, res) => {
         {}
       );
 
-    // Configure request options
-    const options = {
+    // Make the request
+    const response = await fetch(fullUrl, {
       method: requestType,
-      url: fullUrl,
-      headers,
-      ...(requestType !== "GET" && {
-        data: bodyType === "json" ? JSON.parse(body) : body,
-      }),
-    };
+      headers: {
+        ...headers,
+        Accept: "*/*",
+      },
+      ...(requestType !== "GET" &&
+        body && {
+          body: bodyType === "json" ? JSON.stringify(JSON.parse(body)) : body,
+        }),
+    });
+    // Get response headers
+    const responseHeaders: Record<string, string> = {};
+    response.headers.forEach((value, key) => {
+      responseHeaders[key] = value;
+    });
 
-    // Make the API request
-    const response = await axios(options);
+    // Handle different response types
+    let responseData;
+    const contentType = response.headers.get("content-type");
+
+    if (contentType?.includes("application/json")) {
+      responseData = await response.json();
+    } else if (contentType?.includes("text/")) {
+      responseData = await response.text();
+    } else {
+      // For binary data, convert to base64
+      const buffer = await response.arrayBuffer();
+      responseData = btoa(
+        new Uint8Array(buffer).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      );
+    }
 
     // Send back the API response to the user
     res.json({
-      message: "API request successful.",
-      data: response.data,
+      success: true,
       status: response.status,
+      statusText: response.statusText,
+      headers: responseHeaders,
+      data: responseData,
+      contentType,
     });
   } catch (error: any) {
-    if (axios.isAxiosError(error)) {
-      console.error("Axios error details:", {
-        status: error.response?.status,
-        data: error.response?.data,
-        headers: error.response?.headers,
-      });
-
-      res.status(error.response?.status || 500).json({
-        message: "API request failed.",
-        error: error.response?.data || error.message,
-      });
-    } else {
-      console.error("Unexpected error:", error);
-      res.status(500).json({
-        message: "An unexpected error occurred.",
-        error: error.message,
-      });
-    }
+    res.status(400).json({ success: false, message: error.message });
   }
 });
 

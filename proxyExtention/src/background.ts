@@ -42,18 +42,23 @@ chrome.runtime.onMessageExternal.addListener(
           const fullUrl = queryString ? `${url}?${queryString}` : url;
 
           // Construct headers
-          const headers = headerList?.reduce(
-            (
-              acc: Record<string, string>,
-              { key, value }: { key: string; value: string }
-            ) => {
-              if (key && value) {
-                acc[key] = value;
-              }
-              return acc;
-            },
-            {}
-          );
+          const headers = headerList
+            .filter(
+              (header: { key: string; value: string }) =>
+                header.key && header.value
+            )
+            .reduce(
+              (
+                acc: Record<string, string>,
+                { key, value }: { key: string; value: string }
+              ) => {
+                if (key && value) {
+                  acc[key] = value;
+                }
+                return acc;
+              },
+              {}
+            );
 
           // Make the request
           const response = await fetch(fullUrl, {
@@ -128,12 +133,12 @@ chrome.runtime.onMessageExternal.addListener(
 );
 
 // Clean up old requests periodically
-// setInterval(() => {
-//   const now = Date.now();
-//   activeRequests.forEach((request, id) => {
-//     if (now - request.timestamp > 30000) {
-//       // 30 seconds timeout
-//       activeRequests.delete(id);
-//     }
-//   });
-// }, 10000);
+setInterval(() => {
+  const now = Date.now();
+  activeRequests.forEach((request, id) => {
+    if (now - request.timestamp > 30000) {
+      // 30 seconds timeout
+      activeRequests.delete(id);
+    }
+  });
+}, 10000);

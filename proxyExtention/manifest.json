@@ -3,8 +3,7 @@
   "name": "Local API Proxy",
   "version": "1.0",
   "description": "Make requests to localhost APIs from hosted domains",
-  "permissions": ["http://localhost/*", "http://127.0.0.1/*"],
-  "host_permissions": ["http://localhost/*", "http://127.0.0.1/*"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
