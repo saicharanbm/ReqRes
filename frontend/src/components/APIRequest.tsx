@@ -15,7 +15,7 @@ import "react-resizable/css/styles.css";
 import { Send } from "lucide-react";
 import { apiRequest } from "@/services/api";
 import useHasExtention from "@/hook/useHasExtention";
-import { QueryAndHeader, RequestType } from "@/types";
+import { BodyType, QueryAndHeader, RequestType } from "@/types";
 import QueryParameters from "./QueryParameters";
 import Body from "./Body";
 import Headers from "./Headers";
@@ -29,7 +29,7 @@ const APIRequest = () => {
   ]);
   const [url, setUrl] = useState("http://localhost:3000");
   const [requestType, setRequestType] = useState<RequestType>("GET");
-  const [bodyType, setBodyType] = useState("none");
+  const [bodyType, setBodyType] = useState<BodyType>("none");
   const [body, setBody] = useState("");
 
   const hasExtension = useHasExtention();

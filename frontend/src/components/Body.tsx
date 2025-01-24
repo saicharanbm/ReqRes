@@ -10,7 +10,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-function Body({ bodyType, setBodyType, body, setBody }) {
+import { BodyProps, BodyType } from "@/types";
+const Body: React.FC<BodyProps> = ({
+  bodyType,
+  setBodyType,
+  body,
+  setBody,
+}) => {
   const handleEditorMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
   };
@@ -35,7 +41,7 @@ function Body({ bodyType, setBodyType, body, setBody }) {
               value={bodyType}
               onValueChange={(value) => {
                 console.log(value);
-                setBodyType(value);
+                setBodyType(value as BodyType);
               }}
             >
               <SelectTrigger className="w-24">
@@ -70,6 +76,6 @@ function Body({ bodyType, setBodyType, body, setBody }) {
       </Card>
     </TabsContent>
   );
-}
+};
 
 export default Body;
