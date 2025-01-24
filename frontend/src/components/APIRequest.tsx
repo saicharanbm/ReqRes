@@ -11,10 +11,9 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import "react-resizable/css/styles.css";
 import { Send } from "lucide-react";
 import { apiRequest } from "@/services/api";
-import useHasExtention from "@/hook/useHasExtention";
+import useHasExtension from "@/hook/useHasExtension";
 import { BodyType, QueryAndHeader, RequestType } from "@/types";
 import QueryParameters from "./QueryParameters";
 import Body from "./Body";
@@ -32,7 +31,7 @@ const APIRequest = () => {
   const [bodyType, setBodyType] = useState<BodyType>("none");
   const [body, setBody] = useState("");
 
-  const hasExtension = useHasExtention();
+  const hasExtension = useHasExtension();
 
   const sendApiRequest = async () => {
     if (!url) {
