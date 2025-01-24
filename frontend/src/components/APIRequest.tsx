@@ -18,6 +18,7 @@ import { BodyType, QueryAndHeader, RequestType } from "@/types";
 import QueryParameters from "./QueryParameters";
 import Body from "./Body";
 import Headers from "./Headers";
+import { useSendRequestMutation } from "@/services/mutation";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState<QueryAndHeader[]>([
@@ -33,6 +34,13 @@ const APIRequest = () => {
 
   const hasExtension = useHasExtension();
 
+  const {
+    mutation: sendApiRequest,
+    data,
+    error,
+    isPending,
+  } = useSendRequestMutation();
+
   const sendApiRequest = async () => {
     if (!url) {
       toast.error("Endpoint can't be empty.");
@@ -40,9 +48,17 @@ const APIRequest = () => {
     }
 
     const isLocalhost = url.includes("localhost") || url.includes("127.0.0.1");
-    const runtime = window.chrome?.runtime || (window as any).browser?.runtime;
+    const runtime = window.chrome.runtime;
 
     try {
+      const data = {
+        url,
+        queryParams: queryParameters,
+        headerList,
+        body,
+        requestType,
+        bodyType,
+      };
       if (hasExtension && runtime) {
         // Send request through extension
         const response = await new Promise((resolve, reject) => {
@@ -50,14 +66,7 @@ const APIRequest = () => {
             "nbgnlealnfkpjabjpffdgodlojacdlaf",
             {
               type: "MAKE_REQUEST",
-              data: {
-                url,
-                queryParams: queryParameters,
-                headerList,
-                body,
-                requestType,
-                bodyType,
-              },
+              data,
             },
             (response: any) => {
               if (response?.error) {
@@ -80,14 +89,7 @@ const APIRequest = () => {
         return;
       }
       // Your existing non-localhost request handling
-      const data = {
-        url,
-        queryParams: queryParameters,
-        headerList,
-        body,
-        requestType,
-        bodyType,
-      };
+
       const response = await apiRequest(data);
       console.log("resoonse from backend", response);
     } catch (error) {

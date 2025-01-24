@@ -1,3 +1,4 @@
+import { RequestData } from "@/types";
 import axios from "axios";
 // type apiRequestType = {};
 
@@ -10,6 +11,6 @@ export const googleAuth = (code: string) => {
   return axiosInstance.post("/google", { code });
 };
 
-export const apiRequest = (data: any) => {
+export const apiRequest = (data: RequestData) => {
   return axiosInstance.post("/send-api-request", { data });
 };

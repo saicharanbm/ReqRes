@@ -9,6 +9,7 @@ function useHasExtension(): boolean {
   const [hasExtension, setHasExtension] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log(window);
     // Ensure we're in a browser environment
     if (typeof window === "undefined" || !window.chrome) {
       console.warn("Chrome runtime not available");

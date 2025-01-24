@@ -22,3 +22,12 @@ export type BodyProps = {
   bodyType: BodyType;
   setBodyType: React.Dispatch<React.SetStateAction<BodyType>>;
 };
+
+export type RequestData = {
+  url: string;
+  queryParams: QueryAndHeader[];
+  headerList: QueryAndHeader[];
+  body: string;
+  requestType: RequestType;
+  bodyType: BodyType;
+};
