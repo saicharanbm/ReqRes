@@ -12,47 +12,28 @@ import {
 } from "@/components/ui/select";
 import MonacoEditor from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
-import { Card, CardContent } from "@/components/ui/card";
-import { Save, Send, Trash2, Plus } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ResizableBox } from "react-resizable";
+import "react-resizable/css/styles.css";
+import { Send, Trash2, Plus } from "lucide-react";
 import { apiRequest } from "@/services/api";
+import useHasExtention from "@/hook/useHasExtention";
+import { QueryAndHeader, RequestType } from "@/types";
 
 const APIRequest = () => {
-  const [queryParameters, setQueryParameters] = useState([
+  const [queryParameters, setQueryParameters] = useState<QueryAndHeader[]>([
     { id: 1, key: "", value: "" },
   ]);
-  const [headerList, setHeaderList] = useState([{ id: 1, key: "", value: "" }]);
+  const [headerList, setHeaderList] = useState<QueryAndHeader[]>([
+    { id: 1, key: "", value: "" },
+  ]);
   const [url, setUrl] = useState("http://localhost:3000");
-  const [requestType, setRequestType] = useState("GET");
+  const [requestType, setRequestType] = useState<RequestType>("GET");
   const [bodyType, setBodyType] = useState("none");
   const [body, setBody] = useState("");
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
-  // Add state for extension status
-  const [hasExtension, setHasExtension] = useState(false);
-
-  // Check for extension on mount
-  useEffect(() => {
-    const checkExtension = () => {
-      // Check for any Chromium-based browser's extension API
-      if (window.chrome?.runtime || (window as any).browser?.runtime) {
-        const runtime =
-          window.chrome?.runtime || (window as any).browser?.runtime;
-
-        // Try to communicate with extension
-        runtime.sendMessage(
-          "nbgnlealnfkpjabjpffdgodlojacdlaf",
-          { type: "CHECK_INSTALLED" },
-          (response) => {
-            console.log(response);
-            setHasExtension(!!response);
-          }
-        );
-      }
-    };
-
-    checkExtension();
-  }, []);
-
+  const hasExtension = useHasExtention();
   const handleEditorMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
   };
@@ -66,12 +47,6 @@ const APIRequest = () => {
       }
     }
   }, [bodyType]);
-
-  const verifyLanguage = () => {
-    const model = editorRef.current?.getModel();
-    const currentLanguage = model?.getLanguageId();
-    alert(`Current language: ${currentLanguage}`);
-  };
 
   const addQueryParameter = () => {
     const newParam = {
@@ -194,7 +169,7 @@ const APIRequest = () => {
         <Select
           defaultValue={requestType}
           onValueChange={(value) => {
-            setRequestType(value);
+            setRequestType(value as RequestType);
           }}
         >
           <SelectTrigger className="w-24">
@@ -225,191 +200,202 @@ const APIRequest = () => {
           Send
         </Button>
 
-        <Button variant="outline">
+        {/* <Button variant="outline">
           <Save className="w-4 h-4 mr-2" />
           Save
-        </Button>
+        </Button> */}
       </div>
-
       {/* Tabs */}
-      <Tabs defaultValue="parameters" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="parameters">Parameters</TabsTrigger>
-          <TabsTrigger value="body">Body</TabsTrigger>
-          <TabsTrigger value="headers">Headers</TabsTrigger>
-        </TabsList>
+      <div className=" w-full flex flex-col items-center gap-2">
+        <Tabs defaultValue="parameters" className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="parameters">Parameters</TabsTrigger>
+            <TabsTrigger value="body">Body</TabsTrigger>
+            <TabsTrigger value="headers">Headers</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="parameters">
-          <Card className="h-64">
-            <CardContent className="p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm text-muted-foreground">
-                  Query Parameters
-                </h3>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={deleteAllQueryParameters}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={addQueryParameter}
-                  >
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-2 h-44 overflow-y-auto">
-                {queryParameters.map((param) => (
-                  <div
-                    key={param.id}
-                    className="grid grid-cols-[1fr,2fr,auto] gap-4 p-2 items-center"
-                  >
-                    <Input
-                      placeholder="Key"
-                      value={param.key}
-                      onChange={(e) =>
-                        updateParameter(param.id, "key", e.target.value)
-                      }
-                    />
-                    <Input
-                      placeholder="Value"
-                      value={param.value}
-                      onChange={(e) =>
-                        updateParameter(param.id, "value", e.target.value)
-                      }
-                    />
+          <TabsContent value="parameters">
+            <Card className="h-64">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-sm text-muted-foreground">
+                    Query Parameters
+                  </h3>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={deleteAllQueryParameters}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
 
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => deleteQueryParameter(param.id)}
+                      onClick={addQueryParameter}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Plus className="w-4 h-4" />
                     </Button>
                   </div>
-                ))}
+                </div>
 
-                {queryParameters.length === 0 && (
+                <div className="space-y-2 h-44 overflow-y-auto">
+                  {queryParameters.map((param) => (
+                    <div
+                      key={param.id}
+                      className="grid grid-cols-[1fr,2fr,auto] gap-4 p-2 items-center"
+                    >
+                      <Input
+                        placeholder="Key"
+                        value={param.key}
+                        onChange={(e) =>
+                          updateParameter(param.id, "key", e.target.value)
+                        }
+                      />
+                      <Input
+                        placeholder="Value"
+                        value={param.value}
+                        onChange={(e) =>
+                          updateParameter(param.id, "value", e.target.value)
+                        }
+                      />
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => deleteQueryParameter(param.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+
+                  {queryParameters.length === 0 && (
+                    <div className="text-center py-4 text-muted-foreground">
+                      No parameters added. Click the + button to add one.
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="body">
+            <Card className="h-64">
+              <CardContent className="p-4">
+                <div className="flex gap-2 items-center mb-4">
+                  <h3 className="text-sm text-muted-foreground">
+                    Content Type
+                  </h3>
+                  <Select
+                    value={bodyType}
+                    onValueChange={(value) => {
+                      console.log(value);
+                      setBodyType(value);
+                    }}
+                  >
+                    <SelectTrigger className="w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">NONE</SelectItem>
+                      <SelectItem value="json">JSON</SelectItem>
+                      <SelectItem value="text">TEXT</SelectItem>
+                      <SelectItem value="html">HTML</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {bodyType === "none" ? (
                   <div className="text-center py-4 text-muted-foreground">
-                    No parameters added. Click the + button to add one.
+                    No content type selected, Please select a content type.
                   </div>
+                ) : (
+                  <MonacoEditor
+                    className="h-44"
+                    height="100%"
+                    defaultLanguage={bodyType}
+                    defaultValue={body}
+                    theme="vs-dark"
+                    onChange={(data) => {
+                      setBody(data || "");
+                    }}
+                    onMount={handleEditorMount}
+                  />
                 )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        <TabsContent value="body">
-          <Card className="h-64">
-            <CardContent className="p-4">
-              <div className="flex gap-2 items-center mb-4">
-                <h3 className="text-sm text-muted-foreground">Content Type</h3>
-                <Select
-                  value={bodyType}
-                  onValueChange={(value) => {
-                    setBodyType(value);
-                  }}
-                >
-                  <SelectTrigger className="w-24">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">NONE</SelectItem>
-                    <SelectItem value="json">JSON</SelectItem>
-                    <SelectItem value="text">TEXT</SelectItem>
-                    <SelectItem value="html">HTML</SelectItem>
-                  </SelectContent>
-                </Select>
-                <button onClick={verifyLanguage}>Verify Language</button>
-              </div>
-              {bodyType === "none" ? (
-                <div className="text-center py-4 text-muted-foreground">
-                  No content type selected, Please select a content type.
-                </div>
-              ) : (
-                <MonacoEditor
-                  className="h-44"
-                  height="100%"
-                  defaultLanguage={bodyType}
-                  defaultValue={body}
-                  theme="vs-dark"
-                  onChange={(data) => {
-                    setBody(data || "");
-                  }}
-                  onMount={handleEditorMount}
-                />
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="headers">
-          <Card className="h-64">
-            <CardContent className="p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm text-muted-foreground">Header List</h3>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={deleteAllHeaderLists}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-
-                  <Button variant="ghost" size="icon" onClick={addHeaderList}>
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-2 h-44 overflow-y-auto">
-                {headerList.map((header) => (
-                  <div
-                    key={header.id}
-                    className="grid grid-cols-[1fr,2fr,auto] gap-4 p-2 items-center"
-                  >
-                    <Input
-                      placeholder="Key"
-                      value={header.key}
-                      onChange={(e) =>
-                        updateHeader(header.id, "key", e.target.value)
-                      }
-                    />
-                    <Input
-                      placeholder="Value"
-                      value={header.value}
-                      onChange={(e) =>
-                        updateHeader(header.id, "value", e.target.value)
-                      }
-                    />
+          <TabsContent value="headers">
+            <Card className="h-64">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-sm text-muted-foreground">Header List</h3>
+                  <div className="flex gap-2">
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => deleteHeaderList(header.id)}
+                      onClick={deleteAllHeaderLists}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
-                  </div>
-                ))}
 
-                {headerList.length === 0 && (
-                  <div className="text-center py-4 text-muted-foreground">
-                    No parameters added. Click the + button to add one.
+                    <Button variant="ghost" size="icon" onClick={addHeaderList}>
+                      <Plus className="w-4 h-4" />
+                    </Button>
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                </div>
+
+                <div className="space-y-2 h-44 overflow-y-auto">
+                  {headerList.map((header) => (
+                    <div
+                      key={header.id}
+                      className="grid grid-cols-[1fr,2fr,auto] gap-4 p-2 items-center"
+                    >
+                      <Input
+                        placeholder="Key"
+                        value={header.key}
+                        onChange={(e) =>
+                          updateHeader(header.id, "key", e.target.value)
+                        }
+                      />
+                      <Input
+                        placeholder="Value"
+                        value={header.value}
+                        onChange={(e) =>
+                          updateHeader(header.id, "value", e.target.value)
+                        }
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => deleteHeaderList(header.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+
+                  {headerList.length === 0 && (
+                    <div className="text-center py-4 text-muted-foreground">
+                      No parameters added. Click the + button to add one.
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+        <Card className="w-full h-64">
+          <CardHeader>
+            <CardTitle>Resizable Card</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Resize me by dragging the top edge!</p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
