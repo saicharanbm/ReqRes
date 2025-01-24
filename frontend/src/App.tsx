@@ -10,7 +10,7 @@ function App() {
     <div className="w-full min-h-screen flex items-center justify-center bg-[#FAFAFA]  dark:bg-[#09090B] gap-6 p-6 md:p-10">
       <NavBar />
       <GoogleOAuthProvider clientId={clientId}>
-        <div className="pt-6 w-full flex justify-center items-center">
+        <div className="pt-7 w-full flex justify-center items-center">
           <Outlet />
         </div>
       </GoogleOAuthProvider>

@@ -3,14 +3,37 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { QueryParameterProps } from "@/types";
 
-function QueryParameters({
+const QueryParameters: React.FC<QueryParameterProps> = ({
   queryParameters,
-  deleteAllQueryParameters,
-  addQueryParameter,
-  updateParameter,
-  deleteQueryParameter,
-}) {
+  setQueryParameters,
+}) => {
+  const addQueryParameter = () => {
+    const newParam = {
+      id: Date.now(),
+      key: "",
+      value: "",
+      description: "",
+    };
+    setQueryParameters([...queryParameters, newParam]);
+  };
+
+  const deleteQueryParameter = (id: number) => {
+    setQueryParameters(queryParameters.filter((param) => param.id !== id));
+  };
+
+  const deleteAllQueryParameters = () => {
+    setQueryParameters([]);
+  };
+
+  const updateParameter = (id: number, field: string, value: string) => {
+    setQueryParameters(
+      queryParameters.map((param) =>
+        param.id === id ? { ...param, [field]: value } : param
+      )
+    );
+  };
   return (
     <TabsContent value="parameters">
       <Card className="h-64">
@@ -73,6 +96,6 @@ function QueryParameters({
       </Card>
     </TabsContent>
   );
-}
+};
 
 export default QueryParameters;

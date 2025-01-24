@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,58 +34,6 @@ const APIRequest = () => {
 
   const hasExtension = useHasExtention();
 
-  const addQueryParameter = () => {
-    const newParam = {
-      id: Date.now(),
-      key: "",
-      value: "",
-      description: "",
-    };
-    setQueryParameters([...queryParameters, newParam]);
-  };
-
-  const deleteQueryParameter = (id: number) => {
-    setQueryParameters(queryParameters.filter((param) => param.id !== id));
-  };
-
-  const deleteAllQueryParameters = () => {
-    setQueryParameters([]);
-  };
-
-  const updateParameter = (id: number, field: string, value: string) => {
-    setQueryParameters(
-      queryParameters.map((param) =>
-        param.id === id ? { ...param, [field]: value } : param
-      )
-    );
-  };
-
-  const addHeaderList = () => {
-    const newHeader = {
-      id: Date.now(),
-      key: "",
-      value: "",
-      description: "",
-    };
-    setHeaderList([...headerList, newHeader]);
-  };
-
-  const deleteHeaderList = (id: number) => {
-    setHeaderList(headerList.filter((header) => header.id !== id));
-  };
-
-  const deleteAllHeaderLists = () => {
-    setHeaderList([]);
-  };
-
-  const updateHeader = (id: number, field: string, value: string) => {
-    setHeaderList(
-      headerList.map((header) =>
-        header.id === id ? { ...header, [field]: value } : header
-      )
-    );
-  };
-
   const sendApiRequest = async () => {
     if (!url) {
       toast.error("Endpoint can't be empty.");
@@ -112,7 +60,7 @@ const APIRequest = () => {
                 bodyType,
               },
             },
-            (response) => {
+            (response: any) => {
               if (response?.error) {
                 reject(new Error(response.error));
               } else {
@@ -202,10 +150,7 @@ const APIRequest = () => {
 
           <QueryParameters
             queryParameters={queryParameters}
-            deleteAllQueryParameters={deleteAllQueryParameters}
-            addQueryParameter={addQueryParameter}
-            updateParameter={updateParameter}
-            deleteQueryParameter={deleteQueryParameter}
+            setQueryParameters={setQueryParameters}
           />
 
           <Body
@@ -214,20 +159,11 @@ const APIRequest = () => {
             setBodyType={setBodyType}
             setBody={setBody}
           />
-          <Headers
-            headerList={headerList}
-            addHeaderList={addHeaderList}
-            deleteAllHeaderLists={deleteAllHeaderLists}
-            deleteHeaderList={deleteHeaderList}
-            updateHeader={updateHeader}
-          />
+          <Headers headerList={headerList} setHeaderList={setHeaderList} />
         </Tabs>
         <Card className="w-full h-64">
-          <div className="p-4">
-            <h3 className="text-sm text-muted-foreground">Query Parameters</h3>
-          </div>
-          <CardContent>
-            <p>Resize me by dragging the top edge!</p>
+          <CardContent className="p-4 pt-5">
+            <h3 className="text-lg text-muted-foreground">Response</h3>
           </CardContent>
         </Card>
       </div>

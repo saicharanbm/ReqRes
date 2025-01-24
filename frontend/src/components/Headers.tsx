@@ -3,13 +3,34 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
-function Headers({
-  headerList,
-  addHeaderList,
-  deleteAllHeaderLists,
-  deleteHeaderList,
-  updateHeader,
-}) {
+import { HeaderProps } from "@/types";
+
+const Headers: React.FC<HeaderProps> = ({ headerList, setHeaderList }) => {
+  const addHeaderList = () => {
+    const newHeader = {
+      id: Date.now(),
+      key: "",
+      value: "",
+      description: "",
+    };
+    setHeaderList([...headerList, newHeader]);
+  };
+
+  const deleteHeaderList = (id: number) => {
+    setHeaderList(headerList.filter((header) => header.id !== id));
+  };
+
+  const deleteAllHeaderLists = () => {
+    setHeaderList([]);
+  };
+
+  const updateHeader = (id: number, field: string, value: string) => {
+    setHeaderList(
+      headerList.map((header) =>
+        header.id === id ? { ...header, [field]: value } : header
+      )
+    );
+  };
   return (
     <TabsContent value="headers">
       <Card className="h-64">
@@ -63,7 +84,7 @@ function Headers({
 
             {headerList.length === 0 && (
               <div className="text-center py-4 text-muted-foreground">
-                No parameters added. Click the + button to add one.
+                No headers added. Click the + button to add one.
               </div>
             )}
           </div>
@@ -71,6 +92,6 @@ function Headers({
       </Card>
     </TabsContent>
   );
-}
+};
 
 export default Headers;
