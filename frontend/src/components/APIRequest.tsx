@@ -10,15 +10,15 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import MonacoEditor from "@monaco-editor/react";
-import * as monaco from "monaco-editor";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";
 import { Send, Trash2, Plus } from "lucide-react";
 import { apiRequest } from "@/services/api";
 import useHasExtention from "@/hook/useHasExtention";
 import { QueryAndHeader, RequestType } from "@/types";
+import QueryParameters from "./QueryParameters";
+import Body from "./Body";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState<QueryAndHeader[]>([
@@ -31,22 +31,8 @@ const APIRequest = () => {
   const [requestType, setRequestType] = useState<RequestType>("GET");
   const [bodyType, setBodyType] = useState("none");
   const [body, setBody] = useState("");
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   const hasExtension = useHasExtention();
-  const handleEditorMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    editorRef.current = editor;
-  };
-
-  // Update editor language when bodyType changes
-  useEffect(() => {
-    if (editorRef.current) {
-      const model = editorRef.current.getModel();
-      if (model) {
-        monaco.editor.setModelLanguage(model, bodyType);
-      }
-    }
-  }, [bodyType]);
 
   const addQueryParameter = () => {
     const newParam = {
@@ -214,118 +200,20 @@ const APIRequest = () => {
             <TabsTrigger value="headers">Headers</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="parameters">
-            <Card className="h-64">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-sm text-muted-foreground">
-                    Query Parameters
-                  </h3>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={deleteAllQueryParameters}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+          <QueryParameters
+            queryParameters={queryParameters}
+            deleteAllQueryParameters={deleteAllQueryParameters}
+            addQueryParameter={addQueryParameter}
+            updateParameter={updateParameter}
+            deleteQueryParameter={deleteQueryParameter}
+          />
 
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={addQueryParameter}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2 h-44 overflow-y-auto">
-                  {queryParameters.map((param) => (
-                    <div
-                      key={param.id}
-                      className="grid grid-cols-[1fr,2fr,auto] gap-4 p-2 items-center"
-                    >
-                      <Input
-                        placeholder="Key"
-                        value={param.key}
-                        onChange={(e) =>
-                          updateParameter(param.id, "key", e.target.value)
-                        }
-                      />
-                      <Input
-                        placeholder="Value"
-                        value={param.value}
-                        onChange={(e) =>
-                          updateParameter(param.id, "value", e.target.value)
-                        }
-                      />
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteQueryParameter(param.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
-
-                  {queryParameters.length === 0 && (
-                    <div className="text-center py-4 text-muted-foreground">
-                      No parameters added. Click the + button to add one.
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="body">
-            <Card className="h-64">
-              <CardContent className="p-4">
-                <div className="flex gap-2 items-center mb-4">
-                  <h3 className="text-sm text-muted-foreground">
-                    Content Type
-                  </h3>
-                  <Select
-                    value={bodyType}
-                    onValueChange={(value) => {
-                      console.log(value);
-                      setBodyType(value);
-                    }}
-                  >
-                    <SelectTrigger className="w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">NONE</SelectItem>
-                      <SelectItem value="json">JSON</SelectItem>
-                      <SelectItem value="text">TEXT</SelectItem>
-                      <SelectItem value="html">HTML</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {bodyType === "none" ? (
-                  <div className="text-center py-4 text-muted-foreground">
-                    No content type selected, Please select a content type.
-                  </div>
-                ) : (
-                  <MonacoEditor
-                    className="h-44"
-                    height="100%"
-                    defaultLanguage={bodyType}
-                    defaultValue={body}
-                    theme="vs-dark"
-                    onChange={(data) => {
-                      setBody(data || "");
-                    }}
-                    onMount={handleEditorMount}
-                  />
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+          <Body
+            body={body}
+            bodyType={bodyType}
+            setBodyType={setBodyType}
+            setBody={setBody}
+          />
 
           <TabsContent value="headers">
             <Card className="h-64">
@@ -388,9 +276,9 @@ const APIRequest = () => {
           </TabsContent>
         </Tabs>
         <Card className="w-full h-64">
-          <CardHeader>
-            <CardTitle>Resizable Card</CardTitle>
-          </CardHeader>
+          <div className="p-4">
+            <h3 className="text-sm text-muted-foreground">Query Parameters</h3>
+          </div>
           <CardContent>
             <p>Resize me by dragging the top edge!</p>
           </CardContent>
