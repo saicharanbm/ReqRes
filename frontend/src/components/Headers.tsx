@@ -34,8 +34,8 @@ const Headers: React.FC<HeaderProps> = ({ headerList, setHeaderList }) => {
   return (
     <TabsContent value="headers">
       <Card className="h-64">
-        <CardContent className="p-4">
-          <div className="flex justify-between items-center mb-4">
+        <CardContent className="pt-2 pl-4">
+          <div className="flex justify-between items-center mb-2">
             <h3 className="text-sm text-muted-foreground">Header List</h3>
             <div className="flex gap-2">
               <Button

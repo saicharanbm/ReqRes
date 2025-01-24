@@ -97,75 +97,87 @@ const APIRequest = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto bg-background text-foreground p-6 rounded-sm dark:bg-[#121212] shadow-2xl">
-      {/* Top Bar */}
-      <div className="flex items-center gap-4 mb-6">
-        <Select
-          defaultValue={requestType}
-          onValueChange={(value) => {
-            setRequestType(value as RequestType);
-          }}
-        >
-          <SelectTrigger className="w-24">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="GET">GET</SelectItem>
-            <SelectItem value="POST">POST</SelectItem>
-            <SelectItem value="PUT">PUT</SelectItem>
-            <SelectItem value="DELETE">DELETE</SelectItem>
-          </SelectContent>
-        </Select>
+    <div className="w-full min-h-screen py-6 ">
+      <div className="w-full max-w-6xl mx-auto bg-background text-foreground p-6 rounded-sm dark:bg-[#121212] shadow-2xl">
+        {/* Top Bar */}
+        <div className="flex items-center gap-4 mb-6">
+          <Select
+            defaultValue={requestType}
+            onValueChange={(value) => {
+              setRequestType(value as RequestType);
+            }}
+          >
+            <SelectTrigger className="w-24">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="GET">GET</SelectItem>
+              <SelectItem value="POST">POST</SelectItem>
+              <SelectItem value="PUT">PUT</SelectItem>
+              <SelectItem value="DELETE">DELETE</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Input
-          className="flex-1"
-          placeholder="Enter a URL"
-          defaultValue={url}
-          onChange={(e) => {
-            setUrl(e.target.value);
-          }}
-        />
+          <Input
+            className="flex-1"
+            placeholder="Enter a URL"
+            defaultValue={url}
+            onChange={(e) => {
+              setUrl(e.target.value);
+            }}
+          />
 
-        <Button
-          className="bg-violet-500 hover:bg-violet-600"
-          onClick={sendApiRequest}
-        >
-          <Send className="w-4 h-4 mr-2" />
-          Send
-        </Button>
+          <Button
+            className="bg-violet-500 hover:bg-violet-600"
+            onClick={sendApiRequest}
+          >
+            <Send className="w-4 h-4 mr-2" />
+            Send
+          </Button>
 
-        {/* <Button variant="outline">
+          {/* <Button variant="outline">
           <Save className="w-4 h-4 mr-2" />
           Save
         </Button> */}
-      </div>
-      {/* Tabs */}
-      <div className=" w-full flex flex-col items-center gap-2">
-        <Tabs defaultValue="parameters" className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="parameters">Parameters</TabsTrigger>
-            <TabsTrigger value="body">Body</TabsTrigger>
-            <TabsTrigger value="headers">Headers</TabsTrigger>
-          </TabsList>
+        </div>
+        {/* Tabs */}
+        <div className=" w-full flex flex-col items-center gap-2">
+          <Tabs defaultValue="parameters" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger value="parameters">Parameters</TabsTrigger>
+              <TabsTrigger value="body">Body</TabsTrigger>
+              <TabsTrigger value="headers">Headers</TabsTrigger>
+            </TabsList>
 
-          <QueryParameters
-            queryParameters={queryParameters}
-            setQueryParameters={setQueryParameters}
-          />
+            <QueryParameters
+              queryParameters={queryParameters}
+              setQueryParameters={setQueryParameters}
+            />
 
-          <Body
-            body={body}
-            bodyType={bodyType}
-            setBodyType={setBodyType}
-            setBody={setBody}
-          />
-          <Headers headerList={headerList} setHeaderList={setHeaderList} />
-        </Tabs>
-        <Card className="w-full h-64">
-          <CardContent className="p-4 pt-5">
+            <Body
+              body={body}
+              bodyType={bodyType}
+              setBodyType={setBodyType}
+              setBody={setBody}
+            />
+            <Headers headerList={headerList} setHeaderList={setHeaderList} />
+          </Tabs>
+        </div>
+        <div className="w-full flex flex-col pt-4 gap-2">
+          <div className="pt-1 pb-2">
             <h3 className="text-lg text-muted-foreground">Response</h3>
-          </CardContent>
-        </Card>
+          </div>
+          <Tabs defaultValue="parameters" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger value="parameters">Raw</TabsTrigger>
+              <TabsTrigger value="body">Formated</TabsTrigger>
+              <TabsTrigger value="headers">Headers</TabsTrigger>
+            </TabsList>
+            <Card className="w-full h-64">
+              <CardContent className="p-4 "></CardContent>
+            </Card>
+          </Tabs>
+        </div>
       </div>
     </div>
   );

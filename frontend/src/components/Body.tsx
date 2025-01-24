@@ -61,7 +61,7 @@ const Body: React.FC<BodyProps> = ({
             </div>
           ) : (
             <MonacoEditor
-              className="h-44"
+              className="h-44 "
               height="100%"
               defaultLanguage={bodyType}
               defaultValue={body}
