@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MonacoEditor from "@monaco-editor/react";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
 
 import {
   Select,
@@ -181,7 +183,7 @@ const APIRequest = () => {
               <TabsContent value="formated">
                 <Card className="w-full ">
                   <CardContent className="p-4 overflow-auto">
-                    <div className="w-full h-64">
+                    <div className="w-full h-64 overflow-hidden">
                       {/* <MonacoEditor
                         className=""
                         height="100%"
@@ -199,7 +201,23 @@ const APIRequest = () => {
                           wrappingIndent: "indent",
                         }}
                       /> */}
-                      <div dangerouslySetInnerHTML={{ __html: data?.data }} />
+                      {/* <div>{parse(DOMPurify.sanitize(data?.data))}</div> */}
+                      {/* <iframe
+                        className="w-full h-full"
+                        srcDoc={DOMPurify.sanitize(data?.data)}
+                      ></iframe> */}
+                      {/* <iframe
+                        className="w-full h-full"
+                        src="https://app.100xdevs.com"
+                      ></iframe> */}
+                      <div className="overflow-hidden">
+                        <div
+                          className="relative "
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(data?.data),
+                          }}
+                        />
+                      </div>
                       {/* {JSON.stringify(data?.data, null, 2)} */}
                     </div>
                   </CardContent>
