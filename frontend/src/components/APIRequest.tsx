@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ErrorImage from "../assets/error.svg";
 import {
   Select,
   SelectTrigger,
@@ -19,6 +20,8 @@ import Body from "./Body";
 import Headers from "./Headers";
 import { useSendRequestMutation } from "@/services/mutation";
 import { TabsContent } from "@radix-ui/react-tabs";
+import RequestError from "./RequestErrorSvg";
+import SendRequestSvg from "./SendRequestSvg";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState<QueryAndHeader[]>([
@@ -139,12 +142,21 @@ const APIRequest = () => {
             <h3 className="text-lg text-muted-foreground">Response</h3>
           </div>
           {/* condentionally render error and response */}
-
-          {error && !isPending ? (
+          {!isPending && !error && !data ? (
             <Card className="w-full">
               <CardContent className="p-4 overflow-auto">
-                <div className="w-full h-64 flex flex-col items-center justify-center text-red-500">
-                  {error.message}
+                <div className="w-full h-64  px-4 text-center flex flex-col items-center justify-center gap-4 text-muted-foreground">
+                  <SendRequestSvg />
+                  <h2 className="text-xl">Click send to get response.</h2>
+                </div>
+              </CardContent>
+            </Card>
+          ) : error && !isPending ? (
+            <Card className="w-full ">
+              <CardContent className="p-4 overflow-auto">
+                <div className="w-full h-64  px-4 text-center flex flex-col items-center justify-center gap-4 text-red-500">
+                  <RequestError />
+                  <h2 className="text-xl">{error.message}</h2>
                 </div>
               </CardContent>
             </Card>

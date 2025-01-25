@@ -188,7 +188,10 @@ router.post("/send-api-request", async (req, res) => {
       size: responseSize, // Include the calculated response size
     });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    res.status(400).json({
+      success: false,
+      message: "Could not send request through proxy server.",
+    });
   }
 });
 

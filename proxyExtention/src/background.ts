@@ -130,7 +130,7 @@ chrome.runtime.onMessageExternal.addListener(
 
           sendResponse({
             success: false,
-            error: error.message,
+            error: "Could not send request through extension.",
           });
         }
 
@@ -139,7 +139,7 @@ chrome.runtime.onMessageExternal.addListener(
     } catch (error: any) {
       sendResponse({
         success: false,
-        error: error.message,
+        error: "Failed to send request through extension.",
       });
       return keepAlive;
     }
