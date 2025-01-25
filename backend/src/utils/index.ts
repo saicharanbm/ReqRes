@@ -12,3 +12,8 @@ export const generateToken = (
     expiresIn,
   });
 };
+
+export function isHTML(content: string) {
+  const htmlPattern = /<\/?[a-z][\s\S]*>/i;
+  return htmlPattern.test(content);
+}

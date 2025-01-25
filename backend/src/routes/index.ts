@@ -3,7 +3,7 @@ import { oauth2Client } from "../utils/googleClient";
 import axios from "axios";
 import { prisma } from "../utils/db";
 import { TokenType } from "../types";
-import { generateToken } from "../utils";
+import { generateToken, isHTML } from "../utils";
 export const router = Router();
 
 router.post("/google", async (req, res) => {
@@ -159,6 +159,7 @@ router.post("/send-api-request", async (req, res) => {
       }
     } else if (contentType?.includes("text/")) {
       responseData = await response.text();
+
       if (!contentLength) {
         responseSize = new TextEncoder().encode(responseData).length;
       }

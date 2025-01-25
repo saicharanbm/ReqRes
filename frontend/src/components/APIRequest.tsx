@@ -18,6 +18,7 @@ import QueryParameters from "./QueryParameters";
 import Body from "./Body";
 import Headers from "./Headers";
 import { useSendRequestMutation } from "@/services/mutation";
+import { TabsContent } from "@radix-ui/react-tabs";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState<QueryAndHeader[]>([
@@ -64,43 +65,6 @@ const APIRequest = () => {
       runtime,
       isLocalhost,
     });
-
-    //   if (hasExtension && runtime) {
-    //     // Send request through extension
-    //     const response = await new Promise((resolve, reject) => {
-    //       runtime.sendMessage(
-    //         "nbgnlealnfkpjabjpffdgodlojacdlaf",
-    //         {
-    //           type: "MAKE_REQUEST",
-    //           data,
-    //         },
-    //         (response: any) => {
-    //           if (response?.error) {
-    //             reject(new Error(response.error));
-    //           } else {
-    //             resolve(response);
-    //           }
-    //         }
-    //       );
-    //     });
-
-    //     console.log("Response from extension:", response);
-    //     toast.success("Request successful");
-    //     return;
-    //   }
-    //   if (isLocalhost && (!hasExtension || !runtime)) {
-    //     toast.error(
-    //       "To test localhost APIs, please install our browser extension or use a tunneling service like ngrok"
-    //     );
-    //     return;
-    //   }
-    //   // Your existing non-localhost request handling
-
-    //   const response = await apiRequest(data);
-    //   console.log("resoonse from backend", response);
-    // } catch (error) {
-    //   toast.error(`Request failed: ${error.message}`);
-    // }
   };
 
   return (
@@ -174,20 +138,53 @@ const APIRequest = () => {
           <div className="pt-1 pb-2">
             <h3 className="text-lg text-muted-foreground">Response</h3>
           </div>
-          <Tabs defaultValue="parameters" className="w-full">
-            <TabsList className="mb-4">
-              <TabsTrigger value="parameters">Raw</TabsTrigger>
-              <TabsTrigger value="body">Formated</TabsTrigger>
-              <TabsTrigger value="headers">Headers</TabsTrigger>
-            </TabsList>
-            <Card className="w-full ">
+          {/* condentionally render error and response */}
+
+          {error && !isPending ? (
+            <Card className="w-full">
               <CardContent className="p-4 overflow-auto">
-                <div className="w-full h-64">
-                  {JSON.stringify(data, null, 2)}
+                <div className="w-full h-64 flex flex-col items-center justify-center text-red-500">
+                  {error.message}
                 </div>
               </CardContent>
             </Card>
-          </Tabs>
+          ) : (
+            <Tabs defaultValue="raw" className="w-full">
+              <TabsList className="mb-4">
+                <TabsTrigger value="raw">Raw</TabsTrigger>
+                <TabsTrigger value="formated">Formated</TabsTrigger>
+                <TabsTrigger value="headers">Headers</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="raw">
+                <Card className="w-full ">
+                  <CardContent className="p-4 overflow-auto">
+                    <div className="w-full h-64">
+                      {JSON.stringify(data?.data, null, 2)}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="formated">
+                <Card className="w-full ">
+                  <CardContent className="p-4 overflow-auto">
+                    <div className="w-full h-64">
+                      {JSON.stringify(data?.data, null, 2)}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="headers">
+                <Card className="w-full ">
+                  <CardContent className="p-4 overflow-auto">
+                    <div className="w-full h-64">
+                      {JSON.stringify(isPending, null, 2)}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
       </div>
     </div>
