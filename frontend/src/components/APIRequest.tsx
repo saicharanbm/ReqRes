@@ -25,6 +25,7 @@ import { useSendRequestMutation } from "@/services/mutation";
 import { TabsContent } from "@radix-ui/react-tabs";
 import RequestError from "./RequestErrorSvg";
 import SendRequestSvg from "./SendRequestSvg";
+import { request } from "http";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState<QueryAndHeader[]>([
@@ -164,65 +165,76 @@ const APIRequest = () => {
               </CardContent>
             </Card>
           ) : (
-            <Tabs defaultValue="raw" className="w-full">
+            <Tabs defaultValue="body" className="w-full">
               <TabsList className="mb-4">
-                <TabsTrigger value="raw">Raw</TabsTrigger>
-                <TabsTrigger value="formated">Formated</TabsTrigger>
+                <TabsTrigger value="body">Body</TabsTrigger>
+                <TabsTrigger value="cookie">Cookies</TabsTrigger>
                 <TabsTrigger value="headers">Headers</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="raw">
-                <Card className="w-full ">
-                  <CardContent className="p-4 overflow-auto">
-                    <div className="w-full h-64">
-                      {JSON.stringify(data?.data, null, 2)}
-                    </div>
-                  </CardContent>
-                </Card>
+              <TabsContent value="body">
+                <Tabs defaultValue="raw" className="w-full">
+                  <TabsList className="mb-2">
+                    <TabsTrigger value="raw">Raw</TabsTrigger>
+                    <TabsTrigger value="formated">Formated</TabsTrigger>
+                    {requestType === "GET" &&
+                      data?.contentType.includes("html") && (
+                        <TabsTrigger value="preview">Preview</TabsTrigger>
+                      )}
+                  </TabsList>
+                  <TabsContent value="raw">
+                    <Card className="w-full ">
+                      <CardContent className="p-4 overflow-auto">
+                        <div className="w-full h-64">
+                          {JSON.stringify(data?.data, null, 2)}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  <TabsContent value="formated">
+                    <Card className="w-full ">
+                      <CardContent className="p-4 overflow-auto">
+                        <div className="w-full h-64 overflow-hidden">
+                          <MonacoEditor
+                            className=""
+                            height="100%"
+                            defaultLanguage={
+                              data?.contentType.includes("json")
+                                ? "json"
+                                : "html"
+                            }
+                            defaultValue={data?.data}
+                            theme="vs-dark"
+                            options={{
+                              readOnly: true,
+                              minimap: {
+                                enabled: false,
+                              },
+                              wordWrap: "on",
+                              wrappingIndent: "indent",
+                            }}
+                          />
+
+                          {/* {JSON.stringify(data?.data, null, 2)} */}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  {requestType === "GET" &&
+                    data?.contentType.includes("html") && (
+                      <TabsContent value="preview">
+                        <Card className="w-full ">
+                          <CardContent className="p-4 overflow-auto">
+                            <div className="w-full h-64">
+                              <iframe src={url}></iframe>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+                    )}
+                </Tabs>
               </TabsContent>
-              <TabsContent value="formated">
-                <Card className="w-full ">
-                  <CardContent className="p-4 overflow-auto">
-                    <div className="w-full h-64 overflow-hidden">
-                      {/* <MonacoEditor
-                        className=""
-                        height="100%"
-                        defaultLanguage={
-                          data?.contentType.includes("json") ? "json" : "html"
-                        }
-                        defaultValue={data?.data}
-                        theme="vs-dark"
-                        options={{
-                          readOnly: true,
-                          minimap: {
-                            enabled: false,
-                          },
-                          wordWrap: "on",
-                          wrappingIndent: "indent",
-                        }}
-                      /> */}
-                      {/* <div>{parse(DOMPurify.sanitize(data?.data))}</div> */}
-                      {/* <iframe
-                        className="w-full h-full"
-                        srcDoc={DOMPurify.sanitize(data?.data)}
-                      ></iframe> */}
-                      {/* <iframe
-                        className="w-full h-full"
-                        src="https://app.100xdevs.com"
-                      ></iframe> */}
-                      <div className="overflow-hidden">
-                        <div
-                          className="relative "
-                          dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(data?.data),
-                          }}
-                        />
-                      </div>
-                      {/* {JSON.stringify(data?.data, null, 2)} */}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+
               <TabsContent value="headers">
                 <Card className="w-full ">
                   <CardContent className="p-4 overflow-auto">
