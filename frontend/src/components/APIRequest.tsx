@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Send } from "lucide-react";
-import { apiRequest } from "@/services/api";
 import useHasExtension from "@/hook/useHasExtension";
 import { BodyType, QueryAndHeader, RequestType } from "@/types";
 import QueryParameters from "./QueryParameters";
@@ -35,7 +34,8 @@ const APIRequest = () => {
   const hasExtension = useHasExtension();
 
   const {
-    mutation: sendApiRequest,
+    mutateAsync: sendRequest,
+
     data,
     error,
     isPending,
@@ -50,51 +50,57 @@ const APIRequest = () => {
     const isLocalhost = url.includes("localhost") || url.includes("127.0.0.1");
     const runtime = window.chrome.runtime;
 
-    try {
-      const data = {
-        url,
-        queryParams: queryParameters,
-        headerList,
-        body,
-        requestType,
-        bodyType,
-      };
-      if (hasExtension && runtime) {
-        // Send request through extension
-        const response = await new Promise((resolve, reject) => {
-          runtime.sendMessage(
-            "nbgnlealnfkpjabjpffdgodlojacdlaf",
-            {
-              type: "MAKE_REQUEST",
-              data,
-            },
-            (response: any) => {
-              if (response?.error) {
-                reject(new Error(response.error));
-              } else {
-                resolve(response);
-              }
-            }
-          );
-        });
+    const data = {
+      url,
+      queryParams: queryParameters,
+      headerList,
+      body,
+      requestType,
+      bodyType,
+    };
+    await sendRequest({
+      data,
+      hasExtension,
+      runtime,
+      isLocalhost,
+    });
 
-        console.log("Response from extension:", response);
-        toast.success("Request successful");
-        return;
-      }
-      if (isLocalhost && (!hasExtension || !runtime)) {
-        toast.error(
-          "To test localhost APIs, please install our browser extension or use a tunneling service like ngrok"
-        );
-        return;
-      }
-      // Your existing non-localhost request handling
+    //   if (hasExtension && runtime) {
+    //     // Send request through extension
+    //     const response = await new Promise((resolve, reject) => {
+    //       runtime.sendMessage(
+    //         "nbgnlealnfkpjabjpffdgodlojacdlaf",
+    //         {
+    //           type: "MAKE_REQUEST",
+    //           data,
+    //         },
+    //         (response: any) => {
+    //           if (response?.error) {
+    //             reject(new Error(response.error));
+    //           } else {
+    //             resolve(response);
+    //           }
+    //         }
+    //       );
+    //     });
 
-      const response = await apiRequest(data);
-      console.log("resoonse from backend", response);
-    } catch (error) {
-      toast.error(`Request failed: ${error.message}`);
-    }
+    //     console.log("Response from extension:", response);
+    //     toast.success("Request successful");
+    //     return;
+    //   }
+    //   if (isLocalhost && (!hasExtension || !runtime)) {
+    //     toast.error(
+    //       "To test localhost APIs, please install our browser extension or use a tunneling service like ngrok"
+    //     );
+    //     return;
+    //   }
+    //   // Your existing non-localhost request handling
+
+    //   const response = await apiRequest(data);
+    //   console.log("resoonse from backend", response);
+    // } catch (error) {
+    //   toast.error(`Request failed: ${error.message}`);
+    // }
   };
 
   return (
@@ -108,7 +114,7 @@ const APIRequest = () => {
               setRequestType(value as RequestType);
             }}
           >
-            <SelectTrigger className="w-24">
+            <SelectTrigger className="w-16 sm:w-24">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -174,8 +180,12 @@ const APIRequest = () => {
               <TabsTrigger value="body">Formated</TabsTrigger>
               <TabsTrigger value="headers">Headers</TabsTrigger>
             </TabsList>
-            <Card className="w-full h-64">
-              <CardContent className="p-4 "></CardContent>
+            <Card className="w-full ">
+              <CardContent className="p-4 overflow-auto">
+                <div className="w-full h-64">
+                  {JSON.stringify(data, null, 2)}
+                </div>
+              </CardContent>
             </Card>
           </Tabs>
         </div>

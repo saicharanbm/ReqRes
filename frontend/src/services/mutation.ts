@@ -37,12 +37,11 @@ export const useSendRequestMutation = () => {
           });
 
           console.log("Response from extension:", response);
-          toast.success("Request successful");
           return response;
         }
         if (isLocalhost && (!hasExtension || !runtime)) {
           toast.error(
-            "To test localhost APIs, please install our browser extension or use a tunneling service like ngrok"
+            "To test localhost APIs, please install our browser extension or use a tunneling service like ngrok and expose your localhost to the internet."
           );
           return {
             success: false,
@@ -50,7 +49,9 @@ export const useSendRequestMutation = () => {
               "To test localhost APIs, please install our browser extension or use a tunneling service like ngrok and expose your localhost to the internet.",
           };
         }
-        return await apiRequest(data);
+        const response = await apiRequest(data);
+        console.log("Response from API:", response);
+        return response.data;
       } catch (error) {
         const errorMessage = (error as Error).message || "Request failed";
         toast.error(`Request failed: ${errorMessage}`);

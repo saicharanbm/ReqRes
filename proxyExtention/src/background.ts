@@ -84,12 +84,24 @@ chrome.runtime.onMessageExternal.addListener(
           let responseData;
           const contentType = response.headers.get("content-type");
 
+          // Get content length from response headers
+          let contentLength = response.headers.get("content-length");
+          let responseSize = contentLength ? parseInt(contentLength, 10) : 0;
+
+          // Handle different response types
           if (contentType?.includes("application/json")) {
             responseData = await response.json();
+            if (!contentLength) {
+              responseSize = new TextEncoder().encode(
+                JSON.stringify(responseData)
+              ).length;
+            }
           } else if (contentType?.includes("text/")) {
             responseData = await response.text();
+            if (!contentLength) {
+              responseSize = new TextEncoder().encode(responseData).length;
+            }
           } else {
-            // For binary data, convert to base64
             const buffer = await response.arrayBuffer();
             responseData = btoa(
               new Uint8Array(buffer).reduce(
@@ -97,10 +109,11 @@ chrome.runtime.onMessageExternal.addListener(
                 ""
               )
             );
+            responseSize = buffer.byteLength;
           }
 
           // Remove from active requests
-          // activeRequests.delete(requestId);
+          activeRequests.delete(requestId);
 
           sendResponse({
             success: true,
@@ -109,10 +122,11 @@ chrome.runtime.onMessageExternal.addListener(
             headers: responseHeaders,
             data: responseData,
             contentType,
+            size: responseSize,
           });
         } catch (error: any) {
           // Remove from active requests
-          // activeRequests.delete(requestId);
+          activeRequests.delete(requestId);
 
           sendResponse({
             success: false,
@@ -132,7 +146,7 @@ chrome.runtime.onMessageExternal.addListener(
   }
 );
 
-// Clean up old requests periodically
+// // Clean up old requests periodically
 setInterval(() => {
   const now = Date.now();
   activeRequests.forEach((request, id) => {

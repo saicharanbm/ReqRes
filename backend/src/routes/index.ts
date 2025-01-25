@@ -145,12 +145,24 @@ router.post("/send-api-request", async (req, res) => {
     let responseData;
     const contentType = response.headers.get("content-type");
 
+    // Get content length from response headers
+    let contentLength = response.headers.get("content-length");
+    let responseSize = contentLength ? parseInt(contentLength, 10) : 0;
+
+    // Handle different response types
     if (contentType?.includes("application/json")) {
       responseData = await response.json();
+      if (!contentLength) {
+        responseSize = new TextEncoder().encode(
+          JSON.stringify(responseData)
+        ).length;
+      }
     } else if (contentType?.includes("text/")) {
       responseData = await response.text();
+      if (!contentLength) {
+        responseSize = new TextEncoder().encode(responseData).length;
+      }
     } else {
-      // For binary data, convert to base64
       const buffer = await response.arrayBuffer();
       responseData = btoa(
         new Uint8Array(buffer).reduce(
@@ -158,7 +170,11 @@ router.post("/send-api-request", async (req, res) => {
           ""
         )
       );
+      responseSize = buffer.byteLength;
     }
+    console.log("responseData", responseData);
+    console.log("responseSize", responseSize);
+    console.log("responseHeaders", responseHeaders);
 
     // Send back the API response to the user
     res.json({
@@ -168,6 +184,7 @@ router.post("/send-api-request", async (req, res) => {
       headers: responseHeaders,
       data: responseData,
       contentType,
+      size: responseSize, // Include the calculated response size
     });
   } catch (error: any) {
     res.status(400).json({ success: false, message: error.message });
@@ -176,5 +193,5 @@ router.post("/send-api-request", async (req, res) => {
 
 router.get("/hello", (req, res) => {
   console.log("hello");
-  res.status(400).json({ message: "Hello this is the error" });
+  res.status(400).send("Hello this is the error");
 });
