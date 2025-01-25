@@ -61,18 +61,23 @@ chrome.runtime.onMessageExternal.addListener(
             );
 
           // Make the request
-          const response = await fetch(fullUrl, {
+          const options: RequestInit = {
             method: requestType,
             headers: {
               ...headers,
               Accept: "*/*",
+              "Content-Type":
+                bodyType === "json" ? "application/json" : "text/plain",
             },
-            ...(requestType !== "GET" &&
-              body && {
-                body:
-                  bodyType === "json" ? JSON.stringify(JSON.parse(body)) : body,
-              }),
-          });
+          };
+
+          // Add the body conditionally
+          if (requestType !== "GET" && body) {
+            options.body =
+              bodyType === "json" ? JSON.stringify(JSON.parse(body)) : body;
+          }
+
+          const response = await fetch(fullUrl, options);
 
           // Get response headers
           const responseHeaders: Record<string, string> = {};

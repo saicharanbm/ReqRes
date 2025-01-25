@@ -28,6 +28,6 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/v1", router);
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log("Server is listening to port 3000.");
 });

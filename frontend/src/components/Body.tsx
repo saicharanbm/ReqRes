@@ -67,6 +67,7 @@ const Body: React.FC<BodyProps> = ({
               defaultValue={body}
               theme="vs-dark"
               onChange={(data) => {
+                console.log(data);
                 setBody(data || "");
               }}
               onMount={handleEditorMount}

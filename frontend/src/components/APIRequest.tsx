@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MonacoEditor from "@monaco-editor/react";
+import { Copy } from "lucide-react";
+
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 
@@ -15,7 +17,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Send } from "lucide-react";
+import { Car, Send } from "lucide-react";
 import useHasExtension from "@/hook/useHasExtension";
 import { BodyType, QueryAndHeader, RequestType } from "@/types";
 import QueryParameters from "./QueryParameters";
@@ -26,6 +28,7 @@ import { TabsContent } from "@radix-ui/react-tabs";
 import RequestError from "./RequestErrorSvg";
 import SendRequestSvg from "./SendRequestSvg";
 import { request } from "http";
+import { clear } from "console";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState<QueryAndHeader[]>([
@@ -66,12 +69,17 @@ const APIRequest = () => {
       requestType,
       bodyType,
     };
+    console.log(data);
     await sendRequest({
       data,
       hasExtension,
       runtime,
       isLocalhost,
     });
+  };
+  const copyToClipboard = (data: string) => {
+    navigator.clipboard.writeText(data);
+    toast.success("Copied to clipboard");
   };
 
   return (
@@ -171,39 +179,31 @@ const APIRequest = () => {
                 <TabsTrigger value="cookie">Cookies</TabsTrigger>
                 <TabsTrigger value="headers">Headers</TabsTrigger>
               </TabsList>
-
-              <TabsContent value="body">
-                <Tabs defaultValue="raw" className="w-full">
-                  <TabsList className="mb-2">
-                    <TabsTrigger value="raw">Raw</TabsTrigger>
-                    <TabsTrigger value="formated">Formated</TabsTrigger>
-                    {requestType === "GET" &&
-                      data?.contentType.includes("html") && (
-                        <TabsTrigger value="preview">Preview</TabsTrigger>
-                      )}
-                  </TabsList>
-                  <TabsContent value="raw">
-                    <Card className="w-full ">
-                      <CardContent className="p-4 overflow-auto">
-                        <div className="w-full h-64">
-                          {JSON.stringify(data?.data, null, 2)}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                  <TabsContent value="formated">
-                    <Card className="w-full ">
-                      <CardContent className="p-4 overflow-auto">
-                        <div className="w-full h-64 overflow-hidden">
+              <TabsContent value="body" className="w-full overflow-auto">
+                <Card className="w-full ">
+                  <CardContent className="p-4 overflow-auto">
+                    <div className="w-full h-64 ">
+                      <Tabs defaultValue="raw" className="w-full">
+                        <TabsList className="mb-2">
+                          <TabsTrigger value="raw">Raw</TabsTrigger>
+                          <TabsTrigger value="formated">Formated</TabsTrigger>
+                          <TabsTrigger value="preview">Preview</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="raw">
+                          <div className="h-52 overflow-scroll">
+                            {JSON.stringify(data?.data, null, 2)}
+                          </div>
+                        </TabsContent>
+                        <TabsContent value="formated" className="h-auto">
                           <MonacoEditor
-                            className=""
+                            className="h-52 w-full"
                             height="100%"
                             defaultLanguage={
                               data?.contentType.includes("json")
                                 ? "json"
                                 : "html"
                             }
-                            defaultValue={data?.data}
+                            defaultValue={JSON.stringify(data?.data, null, 2)}
                             theme="vs-dark"
                             options={{
                               readOnly: true,
@@ -216,37 +216,99 @@ const APIRequest = () => {
                           />
 
                           {/* {JSON.stringify(data?.data, null, 2)} */}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                  {requestType === "GET" &&
-                    data?.contentType.includes("html") && (
-                      <TabsContent value="preview">
-                        <Card className="w-full ">
-                          <CardContent className="p-4 overflow-auto">
-                            <div className="w-full h-64">
-                              <iframe src={url}></iframe>
+                        </TabsContent>
+
+                        <TabsContent value="preview">
+                          {requestType === "GET" &&
+                          data?.contentType.includes("html") ? (
+                            <iframe
+                              className="w-full h-52 bg-white"
+                              src={url}
+                            ></iframe>
+                          ) : data?.contentType.includes("json") ? (
+                            <pre className="h-52 overflow-scroll">
+                              {JSON.stringify(data?.data, null, 2)}
+                            </pre>
+                          ) : (
+                            <div className="h-52 overflow-scroll  ">
+                              {data?.data
+                                ? parse(data?.data)
+                                : parse(
+                                    "<div><h1>Unable to Preview.</h1></div>"
+                                  )}
                             </div>
-                          </CardContent>
-                        </Card>
-                      </TabsContent>
-                    )}
-                </Tabs>
+                          )}
+                        </TabsContent>
+                      </Tabs>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="cookie">
+                <Card className="w-full ">
+                  <CardContent className="p-4 overflow-auto">
+                    <div className="w-full h-64">
+                      {data?.cookies &&
+                        Object.keys(data?.cookies).map((key, index) => (
+                          <div key={index} className="flex justify-between">
+                            <p>
+                              {key}: {data?.cookies[key]}
+                            </p>
+                          </div>
+                        ))}
+                    </div>
+                  </CardContent>
+                </Card>
               </TabsContent>
 
               <TabsContent value="headers">
                 <Card className="w-full ">
                   <CardContent className="p-4 overflow-auto">
                     <div className="w-full h-64">
-                      {data?.headers &&
-                        Object.keys(data?.headers).map((key, index) => (
-                          <div key={index} className="flex justify-between">
-                            <p>
-                              {key}: {data?.headers[key]}
-                            </p>
-                          </div>
-                        ))}
+                      <div className="flex justify-between items-center ">
+                        <h3 className="text-sm text-muted-foreground">
+                          Header List
+                        </h3>
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() =>
+                            copyToClipboard(JSON.stringify(data?.headers))
+                          }
+                        >
+                          <Copy className="w-4 h-4" />
+                          <title>Copy all Headers</title>
+                        </Button>
+                      </div>
+                      <div className=" space-y-1 h-56 overflow-y-auto">
+                        {data?.headers &&
+                          Object.keys(data?.headers).map((key, index) => (
+                            <div
+                              key={index}
+                              className="grid grid-cols-[1fr,2fr,auto] gap-4 p-2 items-center"
+                            >
+                              <Input placeholder="Key" value={key} readOnly />
+                              <Input
+                                placeholder="Value"
+                                value={data?.headers[key]}
+                                readOnly
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() =>
+                                  copyToClipboard(
+                                    `${key}:${data?.headers[key]}`
+                                  )
+                                }
+                              >
+                                <Copy className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
