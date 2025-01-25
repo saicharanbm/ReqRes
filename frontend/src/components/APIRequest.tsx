@@ -3,7 +3,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ErrorImage from "../assets/error.svg";
+import MonacoEditor from "@monaco-editor/react";
+
 import {
   Select,
   SelectTrigger,
@@ -181,7 +182,25 @@ const APIRequest = () => {
                 <Card className="w-full ">
                   <CardContent className="p-4 overflow-auto">
                     <div className="w-full h-64">
-                      {JSON.stringify(data?.data, null, 2)}
+                      {/* <MonacoEditor
+                        className=""
+                        height="100%"
+                        defaultLanguage={
+                          data?.contentType.includes("json") ? "json" : "html"
+                        }
+                        defaultValue={data?.data}
+                        theme="vs-dark"
+                        options={{
+                          readOnly: true,
+                          minimap: {
+                            enabled: false,
+                          },
+                          wordWrap: "on",
+                          wrappingIndent: "indent",
+                        }}
+                      /> */}
+                      <div dangerouslySetInnerHTML={{ __html: data?.data }} />
+                      {/* {JSON.stringify(data?.data, null, 2)} */}
                     </div>
                   </CardContent>
                 </Card>
@@ -190,7 +209,14 @@ const APIRequest = () => {
                 <Card className="w-full ">
                   <CardContent className="p-4 overflow-auto">
                     <div className="w-full h-64">
-                      {JSON.stringify(isPending, null, 2)}
+                      {data?.headers &&
+                        Object.keys(data?.headers).map((key, index) => (
+                          <div key={index} className="flex justify-between">
+                            <p>
+                              {key}: {data?.headers[key]}
+                            </p>
+                          </div>
+                        ))}
                     </div>
                   </CardContent>
                 </Card>
