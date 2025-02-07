@@ -17,7 +17,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Car, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import useHasExtension from "@/hook/useHasExtension";
 import { BodyType, QueryAndHeader, RequestType } from "@/types";
 import QueryParameters from "./QueryParameters";
@@ -27,8 +27,6 @@ import { useSendRequestMutation } from "@/services/mutation";
 import { TabsContent } from "@radix-ui/react-tabs";
 import RequestError from "./RequestErrorSvg";
 import SendRequestSvg from "./SendRequestSvg";
-import { request } from "http";
-import { clear } from "console";
 
 const APIRequest = () => {
   const [queryParameters, setQueryParameters] = useState<QueryAndHeader[]>([
@@ -120,11 +118,6 @@ const APIRequest = () => {
             <Send className="w-4 h-4 mr-2" />
             Send
           </Button>
-
-          {/* <Button variant="outline">
-          <Save className="w-4 h-4 mr-2" />
-          Save
-        </Button> */}
         </div>
         {/* Tabs */}
         <div className=" w-full flex flex-col items-center gap-2">
@@ -163,12 +156,12 @@ const APIRequest = () => {
                 </div>
               </CardContent>
             </Card>
-          ) : error && !isPending ? (
+          ) : (error || (data && !data?.success)) && !isPending ? (
             <Card className="w-full ">
               <CardContent className="p-4 overflow-auto">
                 <div className="w-full h-64  px-4 text-center flex flex-col items-center justify-center gap-4 text-red-500">
                   <RequestError />
-                  <h2 className="text-xl">{error.message}</h2>
+                  <h2 className="text-xl">{error?.message || data?.message}</h2>
                 </div>
               </CardContent>
             </Card>
@@ -199,11 +192,17 @@ const APIRequest = () => {
                             className="h-52 w-full"
                             height="100%"
                             defaultLanguage={
-                              data?.contentType.includes("json")
+                              data?.contentType &&
+                              data?.contentType?.includes("json")
                                 ? "json"
                                 : "html"
                             }
-                            defaultValue={JSON.stringify(data?.data, null, 2)}
+                            defaultValue={
+                              data?.contentType &&
+                              data?.contentType?.includes("html")
+                                ? data?.data
+                                : JSON.stringify(data?.data, null, 2)
+                            }
                             theme="vs-dark"
                             options={{
                               readOnly: true,
@@ -220,23 +219,29 @@ const APIRequest = () => {
 
                         <TabsContent value="preview">
                           {requestType === "GET" &&
+                          data?.contentType &&
                           data?.contentType.includes("html") ? (
                             <iframe
                               className="w-full h-52 bg-white"
                               src={url}
                             ></iframe>
-                          ) : data?.contentType.includes("json") ? (
+                          ) : data?.contentType &&
+                            data?.contentType.includes("json") ? (
                             <pre className="h-52 overflow-scroll">
                               {JSON.stringify(data?.data, null, 2)}
                             </pre>
                           ) : (
-                            <div className="h-52 overflow-scroll  ">
-                              {data?.data
-                                ? parse(data?.data)
-                                : parse(
-                                    "<div><h1>Unable to Preview.</h1></div>"
-                                  )}
-                            </div>
+                            <iframe
+                              srcDoc={
+                                data?.data || "<div>Unable to Preview.</div>"
+                              }
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                border: "none",
+                              }}
+                              sandbox="allow-scripts allow-same-origin" // Optional: Add security restrictions
+                            />
                           )}
                         </TabsContent>
                       </Tabs>

@@ -136,6 +136,7 @@ chrome.runtime.onMessageExternal.addListener(
           sendResponse({
             success: false,
             error: "Could not send request through extension.",
+            errorDetails: error.message,
           });
         }
 
@@ -145,6 +146,7 @@ chrome.runtime.onMessageExternal.addListener(
       sendResponse({
         success: false,
         error: "Failed to send request through extension.",
+        errorDetails: error.message,
       });
       return keepAlive;
     }
