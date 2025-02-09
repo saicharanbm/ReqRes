@@ -62,8 +62,8 @@ const Navbar = ({ userData }: NavbarProps) => {
             className="text-3xl font-bold tracking-wider text-[#121212] dark:text-[#fff] cursor-pointer"
             onClick={() => navigate("/")}
           >
-            <span>Ping</span>
-            <span className=" text-blue-700 ">Man</span>
+            <span>Req</span>
+            <span className=" text-blue-700 ">Res</span>
           </h1>
         </div>
         <button
