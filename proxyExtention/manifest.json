@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Local API Proxy",
+  "name": "ReqRes Proxy Extension",
   "version": "1.0",
-  "description": "Make requests to localhost APIs from hosted domains",
+  "description": "Make requests to localhost APIs and other hosted domains",
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
