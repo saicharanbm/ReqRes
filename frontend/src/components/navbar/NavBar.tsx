@@ -30,7 +30,7 @@ const Navbar = () => {
       </div>
       <button
         onClick={toggleDarkMode}
-        className="relative px-4 py-2 rounded-full overflow-hidden transition-all duration-300 group flex items-center justify-between gap-2 border border-gray-300 dark:border-gray-700 text-sm font-medium"
+        className="relative px-2 py-1 rounded-full overflow-hidden transition-all duration-300 group flex items-center justify-between gap-2 border border-gray-300 dark:border-gray-700 text-sm font-medium"
         aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
       >
         <span
@@ -40,7 +40,7 @@ const Navbar = () => {
           }}
         ></span>
         <div
-          className={`relative z-10 flex items-center justify-center p-1 rounded-full ${
+          className={`relative z-10 flex items-center justify-center p-1 pr-3 rounded-full ${
             darkMode ? "text-blue-600 font-medium" : "text-gray-500"
           }`}
         >

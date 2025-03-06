@@ -1,0 +1,30 @@
+services:
+  backend_server:
+    container_name: reqres-backend-server
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.backend
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+
+  frontend:
+    container_name: reqres-frontend
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      - backend_server
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - reqres_frontend_build:/usr/share/nginx/html
+
+volumes:
+  reqres_frontend_build:
