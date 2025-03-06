@@ -1,4 +1,4 @@
-import APIRequest from "./ApiRequest";
+import APIRequest from "./APIRequest";
 
 function Dashboard() {
   return (

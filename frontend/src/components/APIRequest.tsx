@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import MonacoEditor from "@monaco-editor/react";
 import { Copy } from "lucide-react";
 
-import DOMPurify from "dompurify";
-import parse from "html-react-parser";
+// import DOMPurify from "dompurify";
+// import parse from "html-react-parser";
 
 import {
   Select,
