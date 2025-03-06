@@ -1,0 +1,31 @@
+# Use Node.js 20 Alpine image
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# copy package files 
+COPY ./backend/package*.json ./
+
+# Install dependencies efficiently
+RUN npm install --frozen-lockfile
+
+# Copy the actual project files
+
+COPY ./backend ./
+
+# Build the backend
+RUN npm run build
+
+#Expose a port 
+EXPOSE 3001
+
+# Run migrations and start the app
+CMD [ "node","dist/index.js"]
+
+# since docker file is inside docker folder, we need to run docker build command from root directory
+#  using docker build -t reqres-backend -f docker/Dockerfile.backend .
+
+
+
+#  docker run -p 3001:3001 reqres-backend
