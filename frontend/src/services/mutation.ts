@@ -21,7 +21,7 @@ export const useSendRequestMutation = () => {
           // Send request through extension
           const response = await new Promise((resolve, reject) => {
             runtime.sendMessage(
-              "nbgnlealnfkpjabjpffdgodlojacdlaf",
+              "ikiihoimippalaflblnebhdkpkmnfbom",
               {
                 type: "MAKE_REQUEST",
                 data,

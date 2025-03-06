@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ReqRes Proxy Extension",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Make requests to localhost APIs and other hosted domains",
   "host_permissions": ["<all_urls>"],
   "background": {
@@ -15,6 +15,6 @@
   },
 
   "externally_connectable": {
-    "matches": ["<all_urls>"]
+    "matches": ["https://reqres.saicharanbm.in/*", "http://localhost/*"]
   }
 }

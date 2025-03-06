@@ -27,7 +27,7 @@ function useHasExtension(): boolean {
 
       try {
         runtime.sendMessage(
-          "nbgnlealnfkpjabjpffdgodlojacdlaf",
+          "ikiihoimippalaflblnebhdkpkmnfbom",
           { type: "CHECK_INSTALLED" },
           (response?: ExtensionResponse) => {
             // Check for runtime errors first
