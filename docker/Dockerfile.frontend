@@ -23,6 +23,11 @@ FROM nginx:alpine
 # Copy built files from the previous stage
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 
+# Copy custom Nginx config
+#by default if we visit any other page other than the root home page it will serve nginx's 404 not found page
+# we need to add config file to let nginx serve us the index instead of 404 page
+COPY ./docker/nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose port 80
 EXPOSE 80
 
