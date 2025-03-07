@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#0E1117 " />
+  
+  <!-- Letters T and B -->
+  <text x="30" y="130" font-family="Arial, sans-serif" font-weight="bold" font-size="100" fill="#fff">R</text>
+  <text x="100" y="130" font-family="Arial, sans-serif" font-weight="bold" font-size="100" fill="#1d4ed8">R</text>
+  
+
+</svg>
